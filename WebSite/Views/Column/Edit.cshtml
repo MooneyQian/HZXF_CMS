@@ -1,0 +1,194 @@
+﻿@model Manage.Core.Models.Menu_S
+@{
+    ViewBag.Title = "编辑菜单";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section HeadContent{
+    <script type="text/javascript">
+        var CTRL = { art_parent: null, valform: null, dialog: null }
+        var _MENUTYPE = { Menu: '@((int)MenuType.Menu)', Function: '@((int)MenuType.Function)', Data: '@((int)MenuType.Data)' };
+        $(function () {
+            //验证提示动态代码
+            $("*[datatype]").each(function (index) {
+                $(this).before("<span class='prompt' style='position:relative'><div class='info' onMouseOut='javascript:$(this).hide();'><span class='Validform_checktip'></span><span class='dec'><s class='dec1'>&#9670;</s><s class='dec2'>&#9670;</s></span></div></span>");
+            });
+
+            //验证与提交（可以通过CTRL.valform.check()进行验证）
+            CTRL.valform = $(".valform").Validform({
+                tiptype: tiptype8,
+                tipSweep: false,
+                ajaxPost: true,
+                btnSubmit: "#asave",
+                callback: function () {
+                    CTRL.dialog = $.dialog.tips("数据处理中，请稍候...");
+                    $.post('@Url.Action("_Edit")' + '?randnum=' + Math.random(), $('form').serializeArray()).done(function (data) {
+                        if (CTRL.dialog) CTRL.dialog.close();
+                        $.dialog.alert(data.Message, function () {
+                            if (!data.IsError) {
+                                if (parent.FUNC.afterEdit)
+                                    parent.FUNC.afterEdit(data.Data);
+                            }
+                        });
+                    });
+                },
+                //特殊处理帐号名称的
+                datatype:
+                    {
+                        "MenuCode": function (gets, obj, curform, regxp) {/*参数gets是获取到的表单元素值，obj为当前表单元素，curform为当前验证的表单，regxp为内置的一些正则表达式的引用。*/
+                            var msg = "";
+                            if ($("input[name=MenuType]:checked").val() == _MENUTYPE.Function) {
+                                if (gets == "") return "功能菜单必须填写菜单编号！";
+                                var url = '@Url.Action("_MenuFuncCodeIsSuc")';
+                                $.ajax({
+                                    type: "POST",
+                                    url: url,
+                                    async: false,
+                                    data: { MenuCode: gets, PerMenuID: '@Model.PerMenuID', ID: '@Model.ID', n: Math.random() },
+                                    success: function (res) {
+                                        if (res == true)
+                                            msg = "同级菜单中已经存在该菜单编号！";
+                                    }
+                                });
+                            }else if ($("input[name=MenuType]:checked").val() == _MENUTYPE.Data) {
+                                if (gets == "") return "数据权限必须填写权限编号！";
+                                var url = '@Url.Action("_MenuDataCodeIsSuc")';
+                                $.ajax({
+                                    type: "POST",
+                                    url: url,
+                                    async: false,
+                                    data: { MenuCode: gets, ID: '@Model.ID', n: Math.random() },
+                                        success: function (res) {
+                                            if (res == true)
+                                                msg = "该数据权限编号已存在！";
+                                        }
+                                    });
+                                }
+                            if (msg != "")
+                                return msg;
+                            else
+                                return true;
+                        },
+                        "Routing": function (gets, obj, curform, regxp) {
+                            if (($("#Controller").val() != "" && $("#Action").val() == "") ||
+                                ($("#Controller").val() == "" && $("#Action").val() != "")) {
+                                return "权限控制Controller和Action必须同时填写！";
+                            } else
+                                return true;
+                        }
+                    }
+            });
+
+            //初始化日期控件
+            $(".Wdate").each(function () { $(this).focus(function () { WdatePicker(); }) });
+
+            //初始化下拉框样式
+            //$('#UserType').ligerComboBox({ width: "90%" });
+
+            //初始化状态控件
+            HS.UI.OnOffBtn($("#RecordStatus"));
+
+            //绑定权限控制隐藏区
+            $("#rotecontrol").toggle(function () { $("#rotecontrol_center").show(); $(this).children("span").removeClass("icon_control").addClass("icon_control_off"); },
+                function () { $("#rotecontrol_center").hide(); $(this).children("span").removeClass("icon_control_off").addClass("icon_control"); });
+
+            //绑定菜单类型控制
+            //$("input[name=MenuType]").click(function () {
+            //    MenuTypeController();
+            //});
+            MenuTypeController();
+
+        });
+
+            function MenuTypeController() {
+                switch ($("input[name=MenuType]:checked").val()) {
+                    case _MENUTYPE.Menu: $("#part1").show(); $("#MenuCode").removeClass("k-notnull "); break;
+                    case _MENUTYPE.Function:
+                    case _MENUTYPE.Data: $("#part1").hide(); $("#MenuPath").val(""); $("#MenuCode").addClass("k-notnull "); break;
+                };
+            }
+
+    </script>
+}
+@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "valform" }))
+{
+    @Html.HiddenFor(c => c.ID)
+    <div class="pop-page">
+        <div class="formtitle">编辑菜单</div>
+        <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="table-title" style="width: 90px;">上级菜单：</td>
+                <td class="table-value" style="width: 150px;">
+                    @Html.DisplayFor(c => c.PerMenuName)
+                </td>
+                <td class="table-title" style="width: 90px;">菜单名称：</td>
+                <td class="table-value" style="width: 150px;">
+                    @Html.TextBoxFor(c => c.MenuName, new { @class = "k-input k-notnull pw90", datatype = "*", nullmsg = "请输入菜单名称！", errormsg = "菜单名称不少于2位！" })
+                </td>
+                <td class="table-title" style="width: 90px;">类型：<span class="icon_help" title="功能：页面内按钮权限设置。"></span>
+                </td>
+                <td class="table-value" style="width: 150px;">
+                    @Html.RadioButtonFor(c => c.MenuType, (int)MenuType.Menu, new { @class = "k-radio", @id = "MenuType1", @name = "MenuType", @disabled = "disabled" })
+                    <label for="MenuType1" style="cursor: pointer;">菜单</label>
+                    @Html.RadioButtonFor(c => c.MenuType, (int)MenuType.Function, new { @class = "k-radio", @id = "MenuType2", @name = "MenuType", @disabled = "disabled" })
+                    <label for="MenuType2" style="cursor: pointer;">功能</label>
+                    @Html.RadioButtonFor(c => c.MenuType, (int)MenuType.Data, new { @class = "k-radio", @id = "MenuType3", @name = "MenuType" })
+                    <label for="MenuType3" style="cursor: pointer;">数据</label>
+                </td>
+            </tr>
+            <tr id="part1">
+                <td class="table-title">菜单地址：</td>
+                <td class="table-value" colspan="5">
+                    @Html.TextBoxFor(c => c.MenuPath, new { @class = "k-input pw90" })
+                </td>
+            </tr>
+            <tr>
+                <td class="table-title">菜单编号：<span class="icon_help" title="功能菜单通过菜单编号与页面按钮进行关联。"></span></td>
+                <td class="table-value">
+                    @Html.TextBoxFor(c => c.MenuCode, new { @class = "k-input pw90", datatype = "MenuCode" })
+                </td>
+                <td class="table-title">排序号：</td>
+                <td class="table-value">
+                    @Html.TextBoxFor(c => c.MenuOrder, new { @class = "k-input w50" })
+                </td>
+                <td class="table-title">状态：</td>
+                <td class="table-value">
+                    @Html.TextBox("RecordStatus", Model.RecordStatus)
+                </td>
+            </tr>
+            <tr>
+                <td class="table-title">菜单描述：</td>
+                <td class="table-value" colspan="5">
+                    @Html.TextAreaFor(c => c.MenuDesc, 3, 5, new { @class = "k-textarea pw90" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" class="secondtitle" style="cursor: pointer;" id="rotecontrol">权限控制
+                    &nbsp;&nbsp;<span class="icon_control" id="control"></span>
+                </td>
+            </tr>
+            <tbody id="rotecontrol_center" style="display: none;">
+                <tr>
+                    <td class="table-title">Area：</td>
+                    <td class="table-value">
+                        @*@Html.TextBoxFor(c => c.Area, new { @class = "k-input wp90" })*@
+                    </td>
+                    <td class="table-title">Controller：</td>
+                    <td class="table-value">
+                        @Html.TextBoxFor(c => c.Controller, new { @class = "k-input wp90", @dataType="Routing" })
+                    </td>
+                    <td class="table-title">Action：</td>
+                    <td class="table-value">
+                        @Html.TextBoxFor(c => c.Action, new { @class = "k-input wp90", @dataType="Routing" })
+                    </td>
+                </tr>
+            </tbody>
+            <tr>
+                <td colspan="6" style="text-align: center; height: 40px; line-height: 40px;">
+                    <a title="重置" class="btn1" href="javascript:$('form').get(0).reset();">重置<i></i></a>
+                    <a title="保存" class="btn2" href="javascript:;" id="asave">保存<i></i></a></td>
+            </tr>
+        </table>
+    </div>
+    <div class="pop-page-bar">
+    </div>
+}

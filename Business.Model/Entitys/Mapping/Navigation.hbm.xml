@@ -1,0 +1,16 @@
+﻿<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" >
+  <class name="Business.Model.Entitys.Entity.NavigationEntity, Business.Model" table="T_Navigation" lazy="false">
+    <id name="ID" column="N_NAVIGATION_ID" type="string" unsaved-value="0">
+
+    </id>
+    <property name="N_COLUMN_ID" column="N_COLUMN_ID" type="string"  />
+    <property name="VC_NAVIGATION_NAME" column="VC_NAVIGATION_NAME" type="string"  />
+    <property name="VC_IMAGE" column="VC_IMAGE" type="string"  />
+    <property name="VC_VEDIO" column="VC_VEDIO" type="string"  />
+    <property name="VC_LINK" column="VC_LINK" type="string"  />
+    <property name="VC_TARGET" column="VC_TARGET" type="string"  />
+    <property name="N_SUPER_NAVIGATION_ID" column="N_SUPER_NAVIGATION_ID" type="string"  />
+    <property name="N_ORDER_NO" column="N_ORDER_NO" type="int"  />
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,181 @@
+﻿@model Business.Model.Models.FloatWindow_S
+@{
+    ViewBag.Title = "浮动窗口列表";
+    Layout = "~/Views/Shared/_List.cshtml";
+}
+@section HeadContent
+{
+    <script type="text/javascript">
+        var FUNC = { Search: null, Add: null, Edit: null, Del: null, Show: null };
+        var CTRL = { SearchBar: null, TollBar: null, Grid: null, Dialog: null };
+        $(function () {
+            //查询条
+            CTRL.SearchBar = $.SearchBar({ contentid: "SearchCentext1", searchFun: FUNC.Search, width: 600, height: 300, dir: "right" });
+            //工具栏
+            CTRL.TollBar = $.ToolBar({
+                contentid: "BtnToolBar", data: [
+                    { id: "btnAdd", text: "新 增", onClick: FUNC.Add },
+                    { id: "btnEdit", text: "修 改", onClick: FUNC.Edit },
+                    { id: "btnDel", text: "删 除", onClick: FUNC.Del },
+                    { id: "btnShow", text: "查 看", onClick: FUNC.Show }
+                ]
+            });
+
+            //列表结构
+            CTRL.Grid = $("#maingrid").ligerGrid({
+                columns: [
+                    {
+                        display: "标题", name: "VC_TITLE", type: "text", align: "center", width: 200,
+                        render: function (row) {
+                            var html = "";
+                            html += "<span title='" + row.VC_TITLE + "'>" + row.VC_TITLE + "</span>";
+                            return html;
+                        }
+                    },
+                    {
+                        display: "图片", name: "VC_IMG_URL", type: "text", align: "center", width: 40,
+                        render: function (row) {
+                            var img_url = row.VC_IMG_URL;
+
+                            var html = "<a title='预览' target='_blank' href='" + img_url + "'><img style='width:32px;height:32px' src='" + img_url + "'></img></a>"
+                            return html;
+                        }
+                    },
+                    { display: "链接地址", name: "VC_TARGET_URL", type: "text", align: "center", width: 200 },
+                    //{ display: "起始位置", name: "VC_START_POSITION", type: "text", align: "center", width: 80 },
+                    { display: "频率", name: "N_SPEED", type: "text", align: "center", width: 80 },
+                    {
+                        display: "状态", name: "C_STATUS", type: "text", align: "center", width: 80, render: function (row) {
+                            var html = "";
+                            if (row.C_STATUS == "0")
+                                html = "<font style='color:red;'>禁用</font>";
+                            else
+                                html = "<font style='color:green;'>启用</font>";
+                            return html;
+                        }
+                    },
+                    { display: "操作人", name: "VC_OP_NAME", type: "text", align: "center", width: 80 },
+                    { display: "操作时间", name: "DT_OP_TIME", type: "date", align: "center", width: 80 }
+                ],
+                pageSize: 10, sortOrder: 'Asc', sortName: 'ID', url: '@Url.Action("_FloatWindowList")', 
+                rowDraggable: false, rownumbers: true, enabledSort: false, height: '100%', heightDiff: -5, checkbox: true,
+                onDblClickRow: function (data, rowindex, rowobj) {
+                    FUNC.Show(data.ID, rowobj, rowindex);
+                }
+                //, onAfterShowData: function () { LigerUiExtend.MergeCell("maingrid", "Extend3"); } //合并单元格，列要写明ID
+            });
+
+        });
+        //查询方法
+        FUNC.Search = function () {
+            var searchData = [
+                //{ name: "N_EVENT_ID", value: $("#N_EVENT_ID").val() },
+                //{ name: "VC_TITLE", value: $("#VC_TITLE").val() },
+                //{ name: "VC_CONTENT", value: $("#VC_CONTENT").val() },
+                //{ name: "N_START_DATE", value: $("#N_START_DATE").val() },
+                //{ name: "N_END_DATE", value: $("#N_END_DATE").val() }
+            ];
+
+            if (!CTRL.Grid) return;
+
+            //根据查询条件刷新列表数据
+            CTRL.Grid.setOptions({ newPage: 1 });
+            CTRL.Grid.set('parms', LigerUiExtend.ParmsMerge(CTRL.Grid.get('parms'), searchData));
+            CTRL.Grid.loadData();
+            if (CTRL.SearchBar) {
+                CTRL.SearchBar.Hide();//隐藏查询框
+                CTRL.SearchBar.SetText();//设置查询条内容
+            }
+        }
+        //新增
+        FUNC.Add = function (id, rowobj, rowinidex) {
+            var url = '@Url.Action("Add")';
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '新增浮窗', width: 600, height: 400, lock: true, resize: false }, false);
+        }
+        //修改
+        FUNC.Edit = function (id, rowobj, rowinidex) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要修改的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    id = this.ID;
+                });
+            }
+            var url = '@Url.Action("Edit")' + "?FloatWindowID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '修改专题', width: 600, height: 400, lock: true, resize: false }, false);
+        }
+        //删除
+        FUNC.Del = function (ids) {
+            if (!ids) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要删除的数据！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    ids += ids != "" ? "," : "";
+                    ids += this.ID;
+                });
+            }
+            var url = '@Url.Action("_Delete")' + '?randnum=' + Math.random();
+            // var url = '@Url.Action("_Delete")' + '?randnum=' + ids;
+            $.dialog.confirm("确认要删除该数据吗？", function () {
+
+                $.post(url, { ids: ids }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+        //查看详细
+        FUNC.Show = function (id, rowobj, rowinidex) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要查看的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    id = this.ID;
+                });
+            }
+            var url = '@Url.Action("Show")' + "?FloatWindowID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '查看', width: 600, height: 500, lock: true, resize: false }, false);
+        }
+
+    </script>
+}
+
+<div class="toolbar">
+    @*工具栏*@
+    <div id="BtnToolBar" style="">
+    </div>
+    @*搜索栏*@
+    <div id="SearchCentext1" class="search-box">
+        <div class="fl" style="width: 220px">
+            <div class="fl">标题：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_TITLE, new { @class = "search-input w120" })
+            </div>
+        </div>
+    </div>
+</div>
+<div id="maingrid" class="list" style="top: 0; clear: both">
+</div>
+<div style="display: none"></div>

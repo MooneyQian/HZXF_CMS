@@ -1,0 +1,296 @@
+﻿@model Business.Model.Models.Article_S
+@{
+    ViewBag.Title = "开放鉴定列表";
+    Layout = "~/Views/Shared/_List.cshtml";
+}
+@section HeadContent
+{
+    <script type="text/javascript">
+        var FUNC = { Search: null, Show: null, Add: null, Edit: null, Del: null, View: null, Verify: null, RemoveVerify: null, };
+        var CTRL = { SearchBar: null, TollBar: null, Grid: null, Dialog: null };
+        $(function () {
+            //查询条
+            CTRL.SearchBar = $.SearchBar({ contentid: "SearchCentext1", searchFun: FUNC.Search, width: 600, height: 300, dir: "right" });
+            //工具栏
+            CTRL.TollBar = $.ToolBar({
+                contentid: "BtnToolBar", data: [
+                    @if (ViewBag.B_Primary == "true" || ViewBag.B_Ultimate == "true")
+                    {<text>
+                    { id: "btnVerify", text: "审核", onClick: FUNC.Verify },
+                    { id: "btnRemoveVerify", text: "审核不通过", onClick: FUNC.RemoveVerify },
+            </text>}
+                    else
+                    {<text>
+                    { id: "btnAdd", text: "新 增", onClick: FUNC.Add/*, funMenuCode: "Add"*/ },
+                    { id: "btnEdit", text: "修 改", onClick: FUNC.Edit },
+                    { id: "btnDel", text: "删 除", onClick: FUNC.Del }</text>}
+                ]
+            });
+
+            //列表结构
+            CTRL.Grid = $("#maingrid").ligerGrid({
+                columns: [
+                    {
+                        display: "标题", name: "VC_TITLE", type: "text", align: "center", width: 350,
+                        render: function (row) {
+                            var html = "";
+                            var title = "";
+                            if (row.VC_TITLE.length > 30)
+                                title = row.VC_TITLE.substr(0, 27) + "...";
+                            else
+                                title = row.VC_TITLE;
+                            html += "<span title='" + row.VC_TITLE + "'>" + title + "</span>";
+                            return html;
+                        }
+                    },
+                    { display: "所属栏目", name: "VC_COLUMN_NAME", type: "text", align: "center", width: 80 },
+                    {
+                        display: "内容", name: "VC_CONTENT", type: "text", align: "center", width: 140,
+                        render: function (row) {
+                            //var html = "<div>" + row.VC_CONTENT + "</div>"
+                            var html = "双击查看详细内容..."
+                            return html;
+                        }
+                    },
+                    { display: "添加时间", name: "DT_ADD_TIME", type: "date", align: "center", width: 110 },
+                    { display: "修改时间", name: "DT_UPDATE_TIME", type: "date", align: "center", width: 110 },
+                    { display: "添加人", name: "VC_ADD_OP_NAME", type: "text", align: "center", width: 80 },
+                    { display: "修改人", name: "VC_UPDATE_OP_NAME", type: "text", align: "center", width: 80 },
+                    {
+                        display: "审核状态", name: "C_VERIFY_STATUS", type: "text", align: "center", width: 80,
+                        render: function (row) {
+                            var html = "<font style='color:red'>未审核</font>";
+                            if (row.C_VERIFY_STATUS == '0')
+                                html = "<font style='color:red'>未审核</font>";
+                            if (row.C_VERIFY_STATUS == '1')
+                                html = "<font style='color:blue'>初审通过</font>";
+                            if (row.C_VERIFY_STATUS == '2')
+                                html = "<font style='color:green'>已开放</font>";
+                            if (row.C_VERIFY_STATUS == '3')
+                                html = "<font style='color:red'>初审不通过</font>";
+                            if (row.C_VERIFY_STATUS == '4')
+                                html = "<font style='color:red'>复审不通过</font>";
+                            return html;
+                        }
+                    },
+               
+                    {
+                        display: '操作', isAllowHide: false, width: 150,
+                        render: function (row) {
+                            var html = "";
+                             @if (ViewBag.B_Primary == "true" || ViewBag.B_Ultimate == "true")
+                             {<text>
+                            html += "<a href='#' onclick=\"FUNC.Verify('" + row.ID + "','" + row.C_VERIFY_STATUS + "');\">审核</a>&nbsp;&nbsp;";
+                            html += "<a href='#' onclick=\"FUNC.RemoveVerify('" + row.ID + "','" + row.C_VERIFY_STATUS + "');\">审核不通过</a>&nbsp;&nbsp;";
+                            </text>}
+                             else
+                             {<text>
+                            html += "<a href='#' onclick=\"FUNC.Edit('" + row.ID + "');\">编辑</a>&nbsp;&nbsp;";
+                            html += "<a href='#' onclick=\"FUNC.Del('" + row.ID + "');\">删除</a>&nbsp;&nbsp;";
+                             </text>}
+                            return html;
+                        }
+                    }
+                ],
+                pageSize: 25, sortOrder: 'Asc', sortName: 'ID', url: '@Url.Action("_ArticleVerifyList")', parms: [
+                { name: "N_COLUMN_ID", value: $("#N_COLUMN_ID").val() }
+                ],
+                rowDraggable: false, rownumbers: true, enabledSort: false, height: '100%', heightDiff: -5, checkbox: true,
+                onDblClickRow: function (data, rowindex, rowobj) {
+                    FUNC.Show(data.ID, rowobj, rowindex);
+                }
+                //, onAfterShowData: function () { LigerUiExtend.MergeCell("maingrid", "Extend3"); } //合并单元格，列要写明ID
+            });
+
+
+        });
+        //查询方法
+        FUNC.Search = function () {
+            var searchData = [
+                { name: "N_COLUMN_ID", value: $("#N_COLUMN_ID").val() },
+            { name: "VC_TITLE", value: $("#VC_TITLE").val() }
+            ];
+
+            if (!CTRL.Grid) return;
+
+            //根据查询条件刷新列表数据
+            CTRL.Grid.setOptions({ newPage: 1 });
+            CTRL.Grid.set('parms', LigerUiExtend.ParmsMerge(CTRL.Grid.get('parms'), searchData));
+            CTRL.Grid.loadData();
+            if (CTRL.SearchBar) {
+                CTRL.SearchBar.Hide();//隐藏查询框
+                CTRL.SearchBar.SetText();//设置查询条内容
+            }
+        }
+       
+        //查看详细
+        FUNC.Show = function (id, rowobj, rowinidex) {
+            var url = '@Url.Action("Show")' + "?ArticleID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '查看', width: 950, height: 600, lock: true, resize: false }, false);
+        }
+        //新增
+        FUNC.Add = function () {
+            var url = '@Url.Action("Add")' + "?columnid=" + $('#N_COLUMN_ID').val();
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '新增', width: 950, height: 600, lock: true, resize: false }, false);
+        }
+        //编辑
+        FUNC.Edit = function (id) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要修改的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择一条数据进行操作！");
+                    return;
+                }
+                var row = selRows[0];
+                id = row.ID;
+            }
+            var url = '@Url.Action("Edit")' + "?ArticleID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '编辑', width: 950, height: 600, lock: true, resize: false }, false);
+        }
+        //删除
+        FUNC.Del = function (ids) {
+            if (!ids) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要删除的数据！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    ids += ids != "" ? "," : "";
+                    ids += this.ID;
+                });
+            }
+            var url = '@Url.Action("_Delete")' + '?randnum=' + Math.random();
+            // var url = '@Url.Action("_Delete")' + '?randnum=' + ids;
+            $.dialog.confirm("确认要删除该数据吗？", function () {
+
+                $.post(url, { ids: ids }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+        //审核
+        FUNC.Verify = function (id, status) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要审核的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择一条数据进行操作！");
+                    return;
+                }
+                var row = selRows[0];
+                id = row.ID;
+                status = row.C_VERIFY_STATUS;
+            }
+
+            if (status == "2") {
+                $.dialog.alert("该记录已审核！");
+                return;
+            }
+            if (status != '1' && '@ViewBag.B_Ultimate' == "true"&&status!='4') {
+                $.dialog.alert("初审未通过，无法进行终审！");
+                return;
+            }
+            if (status == '1' && '@ViewBag.B_Primary' == "true") {
+             $.dialog.alert("已初审，无法重复审核！");
+             return;
+            }
+            if (status == '4' && '@ViewBag.B_Primary' == "true") {
+                $.dialog.alert("复审不通过，无法进行审核！");
+                return;
+            }
+         var url = '@Url.Action("_Verify")' + '?randnum=' + Math.random();
+         $.dialog.confirm("确认要审核通过吗？", function () {
+             $.post(url, { id: id }).done(function (data) {
+                 $.dialog.alert(data.Message, function () {
+                     if (!data.IsError)
+                         CTRL.Grid.loadData();
+                 });
+             });
+         });
+     }
+        //取消审核
+        FUNC.RemoveVerify = function (id, status) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要取消审核的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择一条数据进行操作！");
+                    return;
+                }
+                var row = selRows[0];
+                id = row.ID;
+                status = row.C_VERIFY_STATUS;
+            }
+            if (status == '3' && '@ViewBag.B_Ultimate' == "true") {
+                $.dialog.alert("初审未通过，无法判定终审！");
+                return;
+            }
+            if (status == '4' && '@ViewBag.B_Ultimate' == "true") {
+                $.dialog.alert("已判定复审不通过！");
+                return;
+            }
+            if (status == '2' && '@ViewBag.B_Primary' == "true") {
+                $.dialog.alert("终审已通过，无法更改！");
+                return;
+            }
+            if (status == '3' && '@ViewBag.B_Primary' == "true") {
+                $.dialog.alert("已判定初审不通过！");
+                return;
+            }
+            if (status == '4' && '@ViewBag.B_Primary' == "true") {
+                $.dialog.alert("终审不通过，无法更改！");
+                return;
+            }
+            var url = '@Url.Action("_RemoveVerify")' + '?randnum=' + Math.random();
+                $.dialog.confirm("确认要审核不通过吗？", function () {
+                    $.post(url, { id: id }).done(function (data) {
+                        $.dialog.alert(data.Message, function () {
+                            if (!data.IsError)
+                                CTRL.Grid.loadData();
+                        });
+                    });
+                });
+        }
+    </script>
+}
+
+<div class="toolbar">
+    @*工具栏*@
+    <div id="BtnToolBar" style="">
+    </div>
+    @*搜索栏*@
+    <div id="SearchCentext1" class="search-box">
+        <div class="fl" style="width: 220px">
+            <div class="fl">所属栏目：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_COLUMN_NAME, new { @class = "search-input w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 220px">
+            <div class="fl">标题：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_TITLE, new { @class = "search-input w120" })
+            </div>
+        </div>
+    </div>
+</div>
+<div id="maingrid" class="list" style="top: 0; clear: both">
+</div>
+<div style="display: none">@Html.HiddenFor(c => c.N_COLUMN_ID)</div>

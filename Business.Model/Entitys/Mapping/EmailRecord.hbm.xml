@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" >
+  <class name="Business.Model.Entitys.Entity.EmailRecordEntity, Business.Model" table="T_Email_Record" lazy="false">
+    <id name="ID" column="N_Email_Record_ID" type="string" unsaved-value="0">
+
+    </id>
+    <property name="VC_TITLE" column="VC_TITLE" type="string"  />
+    <property name="VC_CONTENT" column="VC_CONTENT" type="string"  />
+    <property name="VC_IP_ADDRESS" column="VC_IP_ADDRESS" type="string"  />
+    <property name="DT_TIME" column="DT_TIME" type="DateTime"  />
+    <property name="VC_NAME" column="VC_NAME" type="string"  />
+    <property name="VC_PHONE" column="VC_PHONE" type="string"  />
+    <property name="C_EMAIL_TYPE" column="C_EMAIL_TYPE" type="string"  />
+    <property name="DT_VERIFY_TIME" column="DT_VERIFY_TIME" type="DateTime"  />
+    <property name="DT_REPLY_TIME" column="DT_REPLY_TIME" type="DateTime"  />
+    <property name="VC_REPLYER" column="VC_REPLYER" type="string"  />
+    <property name="VC_REPLY_CONTENT" column="VC_REPLY_CONTENT" type="string"  />
+    <property name="C_STATUS" column="C_STATUS" type="string"  />
+
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" >
+  <class name="Business.Model.Entitys.Entity.HitRecordEntity, Business.Model" table="T_Hit_Record" lazy="false">
+    <id name="ID" column="N_Hit_Record_ID" type="string" unsaved-value="0">
+
+    </id>
+    <property name="N_ARTICLE_ID" column="N_ARTICLE_ID" type="string"  />
+    <property name="VC_IP_ADDRESS" column="VC_IP_ADDRESS" type="string"  />
+    <property name="DT_HIT_TIME" column="DT_HIT_TIME" type="date"  />
+    <property name="C_HIT_TYPE" column="C_HIT_TYPE" type="string"  />
+
+  </class>
+</hibernate-mapping>

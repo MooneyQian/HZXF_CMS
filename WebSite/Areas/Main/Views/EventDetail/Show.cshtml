@@ -1,0 +1,57 @@
+﻿@model Business.Model.Models.EventDetail_S
+@{
+    ViewBag.Title = "查看专题明细";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section HeadContent{
+    <script type="text/javascript">
+        var CTRL = { art_parent: null, valform: null }
+        $(function () {
+            //获取父页面对象
+            CTRL.art_parent = $.dialog.data("ParentWindow");
+        });
+
+    </script>
+}
+<div class="pop-page">
+    <div class="formtitle">查看文章</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 90px;">专题：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_EVENT_NAME)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 90px;">标题：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_TITLE)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="min-height: 300px">内容：</td>
+            <td class="table-value" colspan="5" style="min-height: 300px">
+                @Html.DisplayFor(c => c.VC_CONTENT)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="min-height: 300px">内容：</td>
+            <td class="table-value" colspan="5" style="min-height: 300px">
+                <img id="img_show" style="max-width: 95%;" src="@Html.DisplayTextFor(c => c.VC_IMG_URL)" />
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 90px;">提交人：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.VC_OP_NAME)
+            </td>
+            <td class="table-title" style="width: 90px;">提交时间：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.DT_OP_TIME)
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="pop-page-bar">
+    <a title="返回" class="btn1" href="javascript:$.dialog.close();">返回<i></i></a>
+</div>

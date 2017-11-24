@@ -1,0 +1,82 @@
+﻿@model Business.Model.Models.EmailRecord_S
+@{
+    ViewBag.Title = "回复";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section HeadContent{
+    @*uploadify*@
+    <link href="@Url.Content("~/Components/Uploadify/uploadify.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Components/Uploadify/jquery.uploadify.js")"></script>
+    <script type="text/javascript">
+        var CTRL = { art_parent: null, valform: null, dialog: null, ue: null }
+        $(function () {
+            //获取父页面对象
+            CTRL.art_parent = $.dialog.data("ParentWindow");
+
+            //验证提示动态代码
+            $("*[datatype]").each(function (index) {
+                $(this).before("<span class='prompt' style='position:relative'><div class='info' onMouseOut='javascript:$(this).hide();'><span class='Validform_checktip'></span><span class='dec'><s class='dec1'>&#9670;</s><s class='dec2'>&#9670;</s></span></div></span>");
+            });
+
+            //验证与提交（可以通过CTRL.valform.check()进行验证）
+            CTRL.valform = $(".valform").Validform({
+                tiptype: tiptype8,
+                tipSweep: false,
+                ajaxPost: true,
+                btnSubmit: "#asave",
+                callback: function () {
+                    CTRL.dialog = $.dialog.tips("数据处理中，请稍候...");
+                    $.post('@Url.Action("_Reply")' + '?randnum=' + Math.random(), $('form').serializeArray()).done(function (data) {
+                        if (CTRL.dialog) CTRL.dialog.close();
+                        $.dialog.alert(data.Message, function () {
+                            if (!data.IsError) {
+                                CTRL.art_parent.CTRL.Grid.loadData();//重载父页面grid
+                                $.dialog.close();
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+}
+@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "valform" }))
+{
+    <div class="pop-page">
+        <div class="formtitle">留言回复</div>
+        @Html.HiddenFor(c => c.ID)
+        @Html.HiddenFor(c => c.VC_IP_ADDRESS)
+        @Html.HiddenFor(c => c.DT_TIME)
+        @Html.HiddenFor(c => c.C_EMAIL_TYPE)
+        @Html.HiddenFor(c => c.DT_VERIFY_TIME)
+
+        <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="table-title" style="width: 90px;">留言内容：</td>
+                <td class="table-value" style="width: 150px;" colspan="5">
+                    @Html.DisplayFor(c => c.VC_CONTENT)   </td>
+            </tr>
+            <tr>
+                <td class="table-title" style="width: 90px;">回复人：</td>
+                <td class="table-value" style="width: 150px;">
+                    @Html.TextBoxFor(c => c.VC_REPLYER)
+                </td>
+                
+                <td class="table-value" colspan="4">
+                </td>
+            </tr>
+            <tr>
+                <td class="table-title" style="width: 90px;">回复内容：</td>
+                <td class="table-value" style="width: 150px;" colspan="5">
+                    @Html.TextAreaFor(c => c.VC_REPLY_CONTENT, 5, 5, new { @class = "k-textarea pw90" })
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="pop-page-bar">
+        <a title="返回" class="btn1" href="javascript:$.dialog.close();">返回<i></i></a>
+        <a title="重置" class="btn1" href="javascript:$('form').get(0).reset();">重置<i></i></a>
+        <a title="保存" class="btn2" href="javascript:;" id="asave">提交<i></i></a>
+    </div>
+}

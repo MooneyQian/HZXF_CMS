@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" >
+  <class name="Business.Model.Entitys.Entity.LinkEntity, Business.Model" table="T_Link" lazy="false">
+    <id name="ID" column="N_LINK_ID" type="string" unsaved-value="0">
+
+    </id>
+    <property name="VC_LINK_NAME" column="VC_LINK_NAME" type="string"  />
+    <property name="C_LINK_TYPE" column="C_LINK_TYPE" type="string"  />
+    <property name="VC_LINK_URL" column="VC_LINK_URL" type="string"  />
+    <property name="N_COLUMN_ID" column="N_COLUMN_ID" type="string"  />
+    <property name="VC_IMG_URL" column="VC_IMG_URL" type="string"  />
+    <property name="VC_VEDIO_URL" column="VC_VEDIO_URL" type="string"  />
+    <property name="N_OP_ID" column="N_OP_ID" type="string"  />  
+    
+    <property name="DT_OP_TIME" column="DT_OP_TIME" type="date"  /> 
+
+    
+
+  </class>
+</hibernate-mapping>

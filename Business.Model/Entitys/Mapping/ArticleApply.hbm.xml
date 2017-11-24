@@ -1,0 +1,26 @@
+﻿<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Maticsoft" namespace="Maticsoft">
+	<class name="Business.Model.Entitys.Entity.ArticleApplyEntity, Business.Model" table="T_ARTICLE_APPLY" lazy="false">
+    <id name="ID" column="N_APPLY_ID" type="string" unsaved-value="0">
+
+    </id>	
+		<property name="N_ARTICLE_ID" column="N_ARTICLE_ID" type="string"  />
+		<property name="VC_APPLYER_NAME" column="VC_APPLYER_NAME" type="string"  />
+		<property name="VC_APPLYER_IDCARD" column="VC_APPLYER_IDCARD" type="string"  />
+		<property name="VC_APPLYER_PHONE" column="VC_APPLYER_PHONE" type="string"  />
+		<property name="VC_APPLYER_EMAIL" column="VC_APPLYER_EMAIL" type="string"  />
+		<property name="VC_APPLYER_UNIT" column="VC_APPLYER_UNIT" type="string"  />
+		<property name="VC_APPLYER_ADDRESS" column="VC_APPLYER_ADDRESS" type="string"  />
+		<property name="C_APPLY_TYPE" column="C_APPLY_TYPE" type="string"  />
+		<property name="C_RESULT_TYPE" column="C_RESULT_TYPE" type="string"  />
+		<property name="C_DATA_TYPE" column="C_DATA_TYPE" type="string"  />
+		<property name="DT_APPLY_TIME" column="DT_APPLY_TIME" type="datetime"  />
+		<property name="VC_APPLY_MEMO" column="VC_APPLY_MEMO" type="string"  />
+		<property name="VC_CHECKER_ID" column="VC_CHECKER_ID" type="string"  />
+    <property name="DT_CHECK_TIME" column="DT_CHECK_TIME" type="datetime"  />
+		<property name="VC_CHECK_MEMO" column="VC_CHECK_MEMO" type="string"  />
+		<property name="C_CHECK_STATUS" column="C_CHECK_STATUS" type="string"  />
+		<property name="VC_APPLY_FILES" column="VC_APPLY_FILES" type="string"  />
+				
+	</class>
+</hibernate-mapping>

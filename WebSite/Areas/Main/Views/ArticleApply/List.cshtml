@@ -1,0 +1,205 @@
+﻿@model Business.Model.Models.ArticleApply_S
+@{
+    ViewBag.Title = "文章列表";
+    Layout = "~/Views/Shared/_List.cshtml";
+}
+@section HeadContent
+{
+    <script type="text/javascript">
+        var FUNC = { Search: null, Show: null, Check: null,RefuseCheck:null };
+        var CTRL = { SearchBar: null, TollBar: null, Grid: null, Dialog: null };
+        $(function () {
+            //查询条
+            CTRL.SearchBar = $.SearchBar({ contentid: "SearchCentext1", searchFun: FUNC.Search, width: 600, height: 300, dir: "right" });
+            //工具栏
+            CTRL.TollBar = $.ToolBar({
+                contentid: "BtnToolBar", data: [
+                    { id: "btnAdd", text: "查 看", onClick: FUNC.Show },
+                    { id: "btnCheck", text: "审 核", onClick: FUNC.Check },
+                { id: "btnRefuseCheck", text: "审核不通过", onClick: FUNC.RefuseCheck }
+                ]
+            });
+
+            //列表结构
+            CTRL.Grid = $("#maingrid").ligerGrid({
+                columns: [
+                    { display: "档案名称", name: "VC_ARTICLE_NAME", type: "text", align: "center", width: 550 },
+                    { display: "申请人姓名", name: "VC_APPLYER_NAME", type: "text", align: "center", width: 80 },
+                    { display: "身份证号码", name: "VC_APPLYER_IDCARD", type: "text", align: "center", width: 140 },
+                    { display: "手机号", name: "VC_APPLYER_PHONE", type: "text", align: "center", width: 100 },
+                    { display: "申请时间", name: "DT_APPLY_TIME", type: "date", align: "center", width: 100 },
+                    {
+                        display: "状态", name: "C_CHECK_STATUS", type: "date", align: "center", width: 80, render: function (row) {
+                            var html = "";
+                            if (row.C_CHECK_STATUS == '2')
+                                html += "<font style='color:green'>审核不通过</font>";
+                            if (row.C_CHECK_STATUS == '1')
+                                html += "<font style='color:green'>审核通过</font>";
+                            if (row.C_CHECK_STATUS == '0')
+                                html += "<font style='color:red'>未审核</font>";
+                            return html;
+                        }
+                    },
+                    { display: "审核人姓名", name: "VC_CHECKER_NAME", type: "text", align: "center", width: 80 },
+                    { display: "审核时间", name: "DT_CHECK_TIME", type: "date", align: "center", width: 100 },
+                ],
+                pageSize: 25, sortOrder: 'Asc', sortName: 'ID', url: '@Url.Action("_ArticleApplyList")', parms: [],
+                rowDraggable: false, rownumbers: true, enabledSort: false, height: '100%', heightDiff: -5, checkbox: true,
+                onDblClickRow: function (data, rowindex, rowobj) {
+                    FUNC.Show(data.ID, rowobj, rowindex);
+                }
+                //, onAfterShowData: function () { LigerUiExtend.MergeCell("maingrid", "Extend3"); } //合并单元格，列要写明ID
+            });
+
+            //绑定日期控件
+            $("#N_START_DATE").focus(function () { WdatePicker({ dateFmt: "yyyy-MM-dd" }) });
+            $("#N_END_DATE").focus(function () { WdatePicker({ dateFmt: "yyyy-MM-dd" }) });
+            $("#N_START_DATE").val('@ViewBag.N_START_DATE');
+            $("#N_END_DATE").val('@ViewBag.N_END_DATE');
+        });
+        //查询方法
+        FUNC.Search = function () {
+            var searchData = [
+                { name: "VC_ARTICLE_NAME", value: $("#VC_ARTICLE_NAME").val() },
+                { name: "VC_APPLYER_NAME", value: $("#VC_APPLYER_NAME").val() },
+                { name: "N_START_DATE", value: $("#N_START_DATE").val() },
+                { name: "N_END_DATE", value: $("#N_END_DATE").val() }
+            ];
+
+            if (!CTRL.Grid) return;
+
+            //根据查询条件刷新列表数据
+            CTRL.Grid.setOptions({ newPage: 1 });
+            CTRL.Grid.set('parms', LigerUiExtend.ParmsMerge(CTRL.Grid.get('parms'), searchData));
+            CTRL.Grid.loadData();
+            if (CTRL.SearchBar) {
+                CTRL.SearchBar.Hide();//隐藏查询框
+                CTRL.SearchBar.SetText();//设置查询条内容
+            }
+        }
+        //查看详细
+        FUNC.Show = function (id, rowobj, rowinidex) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择一条记录！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    id = this.ID;
+                });
+            }
+            var url = '@Url.Action("Show")' + "?ArticleApplyID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '查看', width: 800, height: 600, lock: true, resize: false }, false);
+        }
+        //审核
+        FUNC.Check = function (id,status) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择一条记录！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    status = this.C_CHECK_STATUS;
+                    id = this.ID;
+                });
+            }
+            if (status == "1") {
+                $.dialog.alert("该记录已审核！");
+                return;
+            }
+            var url = '@Url.Action("_Check")' + '?randnum=' + Math.random();
+            // var url = '@Url.Action("_Check")' + '?randnum=' + ids;
+            $.dialog.confirm("确认要审核通过吗？", function () {
+
+                $.post(url, { ArticleApplyID: id }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+
+        //审核不通过
+        FUNC.RefuseCheck = function (id, status) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择一条记录！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    status = this.C_CHECK_STATUS;
+                    id = this.ID;
+                });
+            }
+            if (status == "1") {
+                $.dialog.alert("该记录已审核！");
+                return;
+            }
+            if (status == "2") {
+                $.dialog.alert("该记录已审核不通过！");
+                return;
+            }
+            var url = '@Url.Action("_RefuseCheck")' + '?randnum=' + Math.random();
+            $.dialog.confirm("确认审核不通过吗？", function () {
+
+                $.post(url, { ArticleApplyID: id }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+    </script>
+}
+
+<div class="toolbar">
+    @*工具栏*@
+    <div id="BtnToolBar" style="">
+    </div>
+    @*搜索栏*@
+    <div id="SearchCentext1" class="search-box">
+        <div class="fl" style="width: 220px">
+            <div class="fl">档案名称：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_ARTICLE_NAME, new { @class = "search-input w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 220px">
+            <div class="fl">申请人姓名：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_APPLYER_NAME, new { @class = "search-input w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 420px">
+            <div class="fl">申请时间：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.N_START_DATE, new { @class = "search-input w120" })
+            </div>
+            <div class="fl">-</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.N_END_DATE, new { @class = "search-input w120" })
+            </div>
+        </div>
+    </div>
+</div>
+<div id="maingrid" class="list" style="top: 0; clear: both">
+</div>
+<div style="display: none"></div>

@@ -1,0 +1,256 @@
+﻿@model Business.Model.Models.EmailRecord_S
+@{
+    ViewBag.Title = "文章列表";
+    Layout = "~/Views/Shared/_List.cshtml";
+}
+@section HeadContent
+{
+    <script type="text/javascript">
+        var FUNC = { Search: null, Show: null, Verify: null, Reply: null };
+        var CTRL = { SearchBar: null, TollBar: null, Grid: null, Dialog: null };
+        $(function () {
+            //查询条
+            CTRL.SearchBar = $.SearchBar({ contentid: "SearchCentext1", searchFun: FUNC.Search, width: 600, height: 300, dir: "right" });
+            //工具栏
+            CTRL.TollBar = $.ToolBar({
+                contentid: "BtnToolBar", data: [
+                    { id: "btnAdd", text: "查 看", onClick: FUNC.Show },
+                    { id: "btnDel", text: "删 除", onClick: FUNC.Del }
+                ]
+            });
+
+            //列表结构
+            CTRL.Grid = $("#maingrid").ligerGrid({
+                columns: [
+                    { display: "类型", name: "C_EMAIL_TYPE", type: "text", align: "center", width: 80 },
+                    {
+                        display: "标题", name: "VC_TITLE", type: "text", align: "center", width: 150,
+                        render: function (row) {
+                            var html = "";
+                            var title = "";
+                            if (row.VC_TITLE.length > 30)
+                                title = row.VC_TITLE.substr(0, 27) + "...";
+                            else
+                                title = row.VC_TITLE;
+                            html += "<span title='" + row.VC_TITLE + "'>" + title + "</span>";
+                            return html;
+                        }
+                    },
+                    {
+                        display: "内容", name: "VC_CONTENT", type: "text", align: "center", width: 200,
+                        render: function (row) {
+                            var content = row.VC_CONTENT;
+                            if (content.length > 20)
+                                content = content.substr(0, 20) + "...";
+                            var html = "<div title='" + row.VC_CONTENT + "'>" + content + "</div>"
+                            return html;
+                        }
+                    },
+                    { display: "姓名", name: "VC_NAME", type: "text", align: "center", width: 80 },
+                    { display: "联系方式", name: "VC_PHONE", type: "text", align: "center", width: 80 },
+                    { display: "时间", name: "DT_TIME", type: "date", align: "center", width: 80 },
+                    {
+                        display: "状态", name: "C_STATUS", type: "text", align: "center", width: 80, render: function (row) {
+                            var html = "";
+                            if (row.C_EMAIL_TYPE == '局长信箱')
+                                return html;
+                            html = "<font style='color:red'>未审核</font>";
+                            if (row.C_STATUS == '@(((int)EMEMAILSTATUS.已审核).ToString())')
+                                html = "<font style='color:blue'>已审核</font>";
+                            if (row.C_STATUS == '@(((int)EMEMAILSTATUS.已回复).ToString())')
+                                html = "<font style='color:green'>已回复</font>";
+                            return html;
+                        }
+                    },
+                    { display: "审核时间", name: "DT_VERIFY_TIME", type: "date", align: "center", width: 80 },
+                    { display: "回复时间", name: "DT_REPLY_TIME", type: "date", align: "center", width: 80 },
+                    { display: "回复人", name: "VC_REPLYER", type: "text", align: "center", width: 80 },
+                    { display: "回复内容", name: "VC_REPLY_CONTENT", type: "text", align: "center", width: 200 },
+                    {
+                        display: "操作", name: "C_STATUS", type: "text", align: "center", width: 80, render: function (row) {
+                            var html = "";
+                            if (row.C_EMAIL_TYPE == '局长信箱')
+                                return html;
+                            html += "<a href='#' onclick=\"FUNC.Reply('" + row.ID + "');\">回复</a>&nbsp;&nbsp;";
+                            html += "<a href='#' onclick=\"FUNC.Verify('" + row.ID + "');\">审核</a>&nbsp;&nbsp;";
+                            //if (row.C_STATUS == '@(((int)EMEMAILSTATUS.已审核).ToString())')
+                            return html;
+                        }
+                    }
+                ],
+                pageSize: 25, sortOrder: 'Asc', sortName: 'ID', url: '@Url.Action("_EmailList")', parms: [],
+                rowDraggable: false, rownumbers: true, enabledSort: false, height: '100%', heightDiff: -5, checkbox: true,
+                onDblClickRow: function (data, rowindex, rowobj) {
+                    FUNC.Show(data.ID, rowobj, rowindex);
+                }
+                //, onAfterShowData: function () { LigerUiExtend.MergeCell("maingrid", "Extend3"); } //合并单元格，列要写明ID
+            });
+
+            //绑定日期控件
+            $("#N_START_DATE").focus(function () { WdatePicker({ dateFmt: "yyyy-MM-dd" }) });
+            $("#N_END_DATE").focus(function () { WdatePicker({ dateFmt: "yyyy-MM-dd" }) });
+            $("#N_START_DATE").val('@ViewBag.N_START_DATE');
+            $("#N_END_DATE").val('@ViewBag.N_END_DATE');
+        });
+        //查询方法
+        FUNC.Search = function () {
+            var searchData = [
+                { name: "C_EMAIL_TYPE", value: $("#C_EMAIL_TYPE").val() },
+                { name: "VC_NAME", value: $("#VC_NAME").val() },
+                { name: "VC_CONTENT", value: $("#VC_CONTENT").val() },
+                { name: "N_START_DATE", value: $("#N_START_DATE").val() },
+                { name: "N_END_DATE", value: $("#N_END_DATE").val() }
+            ];
+
+            if (!CTRL.Grid) return;
+
+            //根据查询条件刷新列表数据
+            CTRL.Grid.setOptions({ newPage: 1 });
+            CTRL.Grid.set('parms', LigerUiExtend.ParmsMerge(CTRL.Grid.get('parms'), searchData));
+            CTRL.Grid.loadData();
+            if (CTRL.SearchBar) {
+                CTRL.SearchBar.Hide();//隐藏查询框
+                CTRL.SearchBar.SetText();//设置查询条内容
+            }
+        }
+        //删除
+        FUNC.Del = function (ids) {
+            if (!ids) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要删除的数据！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    ids += ids != "" ? "," : "";
+                    ids += this.ID;
+                });
+            }
+            var url = '@Url.Action("_Delete")' + '?randnum=' + Math.random();
+            // var url = '@Url.Action("_Delete")' + '?randnum=' + ids;
+            $.dialog.confirm("确认要删除该数据吗？", function () {
+
+                $.post(url, { ids: ids }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+        //审核
+        FUNC.Verify = function (id) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要审核的数据！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择一条数据进行操作！");
+                    return;
+                }
+                var row = selRows[0];
+                if (row.C_STATUS != "" && row.C_STATUS != "0") {
+                    $.dialog.alert("该记录不需要审核！");
+                    return;
+                }
+                id = row.ID;
+            }
+            var url = '@Url.Action("_Verify")' + '?randnum=' + Math.random();
+            $.dialog.confirm("确认要审核通过吗？", function () {
+
+                $.post(url, { EmailID: id }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError)
+                            CTRL.Grid.loadData();
+                    });
+                });
+            });
+        }
+        //回复
+        FUNC.Reply = function (id) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择要回复的留言！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择一条数据进行操作！");
+                    return;
+                }
+                var row = selRows[0];
+                if (row.C_STATUS != "1") {
+                    $.dialog.alert("该记录无法回复！");
+                    return;
+                }
+                id = row.ID;
+            }
+            var url = '@Url.Action("Reply")' + "?EmailID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '回复', width: 600, height: 400, lock: true, resize: false }, false);
+        }
+        //查看详细
+        FUNC.Show = function (id, rowobj, rowinidex) {
+            if (!id) {
+                var selRows = CTRL.Grid.getSelectedRows();
+                if (selRows.length == 0) {
+                    $.dialog.alert("请选择一条记录！");
+                    return;
+                }
+                if (selRows.length > 1) {
+                    $.dialog.alert("请选择单条记录！");
+                    return;
+                }
+                $(selRows).each(function () {
+                    id = this.ID;
+                });
+            }
+            var url = '@Url.Action("Show")' + "?EmailID=" + id;
+            $.dialog.data("ParentWindow", window);
+            $.dialog.open(url, { title: '查看', width: 950, height: 600, lock: true, resize: false }, false);
+        }
+
+    </script>
+}
+
+<div class="toolbar">
+    @*工具栏*@
+    <div id="BtnToolBar" style="">
+    </div>
+    @*搜索栏*@
+    <div id="SearchCentext1" class="search-box">
+        <div class="fl" style="width: 220px">
+            <div class="fl">类型：</div>
+            <div class="fl">
+                @Html.DropDownListFor(c => c.C_EMAIL_TYPE, typeof(EMEMAILTYPE).EnumToSelectList(), "--请选择--", new { @class = "w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 220px">
+            <div class="fl">内容关键词：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_CONTENT, new { @class = "search-input w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 220px">
+            <div class="fl">姓名：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.VC_NAME, new { @class = "search-input w120" })
+            </div>
+        </div>
+        <div class="fl" style="width: 420px">
+            <div class="fl">添加时间：</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.N_START_DATE, new { @class = "search-input w120" })
+            </div>
+            <div class="fl">-</div>
+            <div class="fl">
+                @Html.TextBoxFor(c => c.N_END_DATE, new { @class = "search-input w120" })
+            </div>
+        </div>
+    </div>
+</div>
+<div id="maingrid" class="list" style="top: 0; clear: both">
+</div>
+<div style="display: none"></div>

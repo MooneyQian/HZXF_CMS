@@ -1,0 +1,71 @@
+﻿@model Business.Model.Models.EmailRecord_S
+@{
+    ViewBag.Title = "查看邮件&留言";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section HeadContent{
+    <script type="text/javascript">
+        var CTRL = { art_parent: null, valform: null }
+        $(function () {
+            //获取父页面对象
+            CTRL.art_parent = $.dialog.data("ParentWindow");
+        });
+
+    </script>
+}
+<div class="pop-page">
+    <div class="formtitle">留言信息</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 90px;">标题：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_TITLE)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="min-height: 300px">内容：</td>
+            <td class="table-value" colspan="5" style="min-height: 300px">
+                @Html.DisplayFor(c => c.VC_CONTENT)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 90px;">提交人：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.VC_NAME)
+            </td>
+            <td class="table-title" style="width: 90px;">联系方式：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.VC_PHONE)
+            </td>
+            <td class="table-title" style="width: 90px;">提交时间：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.DT_TIME)
+            </td>
+        </tr>
+    </table>
+    <div class="formtitle">回复信息</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="min-height: 300px">回复内容：</td>
+            <td class="table-value" colspan="5" style="min-height: 300px">
+                @Html.DisplayFor(c => c.VC_REPLY_CONTENT)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 90px;">回复人：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.VC_REPLYER)
+            </td>
+            <td class="table-title" style="width: 90px;">回复时间：</td>
+            <td class="table-value" style="width: 150px;">
+                @Html.DisplayFor(c => c.DT_REPLY_TIME)
+            </td>
+            <td class="table-title" style="width: 90px;"></td>
+            <td class="table-value" style="width: 150px;">
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="pop-page-bar">
+    <a title="返回" class="btn1" href="javascript:$.dialog.close();">返回<i></i></a>
+</div>

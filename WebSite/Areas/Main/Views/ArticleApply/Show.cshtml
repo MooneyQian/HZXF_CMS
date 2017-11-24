@@ -1,0 +1,171 @@
+﻿@model Business.Model.Models.ArticleApply_S
+@{
+    ViewBag.Title = "查看档案申请";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+@section HeadContent{
+    <script type="text/javascript">
+        var CTRL = { art_parent: null, valform: null }
+        $(function () {
+            //获取父页面对象
+            CTRL.art_parent = $.dialog.data("ParentWindow");
+        });
+     
+        function save() {
+            var url = '@Url.Action("_Check")' + '?randnum=' + Math.random();
+            // var url = '@Url.Action("_Check")' + '?randnum=' + ids;
+            $.dialog.confirm("确认要审核通过吗？", function () {
+
+                $.post(url, { ArticleApplyID: $("#ID").val(), CheckMemo: $("#VC_CHECK_MEMO").val() }).done(function (data) {
+                    $.dialog.alert(data.Message, function () {
+                        if (!data.IsError) {
+                            $("#checkstatus").html("<font style='color: green'>已审核</font>");
+                            $("#checkername").html($("#VC_CHECKER_NAME").val());
+                            $("#checktime").html(new Date().format("yyyy-MM-dd"));
+                            $("#checkmemo").html($("#VC_CHECK_MEMO").val());
+                            CTRL.art_parent.CTRL.Grid.loadData();
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+}
+<div class="pop-page">
+    <div class="formtitle">档案查询申请</div>
+    @Html.HiddenFor(c => c.ID)
+    @Html.HiddenFor(c => c.VC_CHECKER_NAME)
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 120px;">档案名称：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_ARTICLE_NAME)
+            </td>
+        </tr>
+    </table>
+    <div class="formtitle">申请人基本信息</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 120px;">姓名：</td>
+            <td class="table-value" colspan="2">
+                @Html.DisplayFor(c => c.VC_APPLYER_NAME)
+            </td>
+            <td class="table-title" style="width: 120px;">身份证号码：</td>
+            <td class="table-value" colspan="2">
+                @Html.DisplayFor(c => c.VC_APPLYER_IDCARD)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">手机号：</td>
+            <td class="table-value" colspan="2">
+                @Html.DisplayFor(c => c.VC_APPLYER_PHONE)
+            </td>
+            <td class="table-title" style="width: 120px;">电子邮件：</td>
+            <td class="table-value" colspan="2">
+                @Html.DisplayFor(c => c.VC_APPLYER_EMAIL)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">单位：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_APPLYER_UNIT)
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">住址(邮寄地址)：</td>
+            <td class="table-value" style="width: 150px;" colspan="5">
+                @Html.DisplayFor(c => c.VC_APPLYER_ADDRESS)
+            </td>
+        </tr>
+    </table>
+    <div class="formtitle">申请信息</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 120px;">申请人类型：</td>
+            <td class="table-value" colspan="2">
+                @Html.Encode(Model.C_APPLY_TYPE.ToString().ConvertToEnum<EMAPPLYTYPE>().ToString())
+            </td>
+            <td class="table-title" style="width: 120px;">结果需求：</td>
+            <td class="table-value" colspan="2">
+                @Html.Encode(Model.C_RESULT_TYPE.ToString().ConvertToEnum<EMRESULTTYPE>().ToString())
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">申请档案类型：</td>
+            <td class="table-value" colspan="2">
+                @Html.Encode(Model.C_DATA_TYPE.ToString().ConvertToEnum<EMDATATYPE>().ToString())
+            </td>
+            <td class="table-title" style="width: 120px;">申请日期：</td>
+            <td class="table-value" colspan="2">
+                @Html.Encode(Model.DT_APPLY_TIME.Value.ToString("yyyy-MM-dd"))
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">申请说明：</td>
+            <td class="table-value" style="width: 150px; height: 50px" colspan="5" >
+                @Html.DisplayFor(c => c.VC_APPLY_MEMO)
+            </td>
+        </tr>
+          <tr>
+            <td class="table-title" style="width: 120px;">申请材料附件：</td>
+            <td class="table-value" style="width: 150px; height: 50px" colspan="5" id="applyfiles">
+               @if (Model.VC_APPLY_FILES != null)
+               {
+                   string[] strs;
+                   string files = Model.VC_APPLY_FILES;
+                   for (int i = 0; i < files.Split(';').Length-1; i++)
+                   {
+                       strs = files.Split(';');
+                       Model.VC_APPLY_FILES = strs[i];
+                     <a href="@Model.VC_APPLY_FILES" >@Html.DisplayFor(c => c.VC_APPLY_FILES)</a><br/>
+                   }
+               }
+            </td>
+        </tr>
+    </table>
+    <div class="formtitle">申请信息</div>
+    <table class="tableread" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td class="table-title" style="width: 120px;">审核状态：</td>
+            <td class="table-value" style="width: 150px;" colspan="5" id="checkstatus">
+                @if (Model.C_CHECK_STATUS == "1")
+                {<text>
+                    <font style='color: green'>已审核</font>
+                    </text>}
+                else
+                {<text><font style='color: red'>未审核</font></text>}
+                @*@Html.Encode(Model.C_CHECK_STATUS.ToString().ConvertToEnum<EMCHECKSTATUS>().ToString())*@
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">审核人：</td>
+            <td class="table-value" colspan="2" id="checkername">
+                @Html.DisplayFor(c => c.VC_CHECKER_NAME)
+            </td>
+            <td class="table-title" style="width: 120px;">审核时间：</td>
+            <td class="table-value" colspan="2" id="checktime">
+                @Html.Encode(Model.DT_CHECK_TIME == null ? "" : Model.DT_CHECK_TIME.Value.ToString("yyyy-MM-dd"))
+            </td>
+        </tr>
+        <tr>
+            <td class="table-title" style="width: 120px;">审核说明：</td>
+            <td class="table-value" style="width: 150px; height: 50px" colspan="5" id="checkmemo">
+                @if (Model.C_CHECK_STATUS == "1")
+                { <text>
+                    @Html.DisplayFor(c => c.VC_CHECK_MEMO)
+                    </text>}
+                else
+                {<text>
+                    @Html.TextAreaFor(c => c.VC_CHECK_MEMO, 3, 5, new { @class = "k-textarea pw90" })
+                    </text>}
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="pop-page-bar">
+    <a title="返回" class="btn1" href="javascript:$.dialog.close();">返回<i></i></a>
+    @if (Model.C_CHECK_STATUS == "0")
+    { <text>
+        <a title="审核" class="btn2" href="javascript:save();">审核<i></i></a>
+        </text>}
+</div>
