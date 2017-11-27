@@ -117,7 +117,7 @@ layui.define(["jquery", "layer", "qian"], function (exports) {
                     },
                     callback: {
                         onClick: function (event, treeId, treeNode) {
-                            if (treeNode.id == "root") {
+                            if (treeNode.id == "root" || treeNode.isparent) {
                                 $("#rightFrame").attr("src", "");
                                 return false;
                             }

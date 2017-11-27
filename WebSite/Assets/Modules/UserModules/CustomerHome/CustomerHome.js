@@ -23,23 +23,22 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
     //加载头部
     MainIndex.loadHeader = function () {
         //消息提醒
-        loadTips();
+        //loadTips();
         //更改密码
-        $("#h-change-pwd").click(function () {
+        //$("#h-change-pwd").click(function () {
 
-        });
-
-        //退出登录
-        $("#h-logout").click(function () {
-            logout();
-        });
+        //});
     }
 
     //加载左侧菜单
     MainIndex.loadLeftMenus = "/Home/GetMenuTree";
 
+    //左侧菜单父id
+    MainIndex.parentKeyV = "34b3b356-8880-4049-b8b6-199003ca9bce";
+
     //打开首页
     MainIndex.loadTabMain = function () {
+        return;
         qian.ajax({
             url: '/CustomerHome/_GetHomeData',
             type: 'post',
@@ -51,8 +50,7 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
                     data: res,
                     render: function () {
                         $(".content-scroll").css("height", MainIndex.getHeight());
-                        loadMap();
-                        loadCharts();
+                       
                     }
                 });
             }
@@ -148,158 +146,8 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
     function obtainSoundtips() {
         usercenter.playSound();
     }
-
-
-    //退出登录
-    function logout() {
-        window.location.href = '/Account/LogOff';
-    }
-
-    function loadMap() {
-        return;
-        try {
-            map = new T.Map('mapDiv');
-            map.centerAndZoom(new T.LngLat(119.67534, 30.64112), 14);
-            //map.enableHandleMouseScroll(); //允许鼠标双击放大地图   
-
-            loadMapData();
-
-        } catch (err) {
-            alert('天地图加载不成功，请稍候再试！你可以先使用其他功能！');
-        }
-    }
-
-    //加载地图数据
-    function loadMapData() {
-        qian.ajax({
-            url: '/EquipmentInfo/_GetALLWebcamJson',
-            type: 'post',
-            data: {
-                devtype: "Webcam"
-            },
-            success: function (res) {
-                drawTMaker(res);
-            }
-        });
-    }
-
-
-    //往地图上添加一个marker。传入参数坐标信息lnglat。传入参数图标信息。
-    function drawTMaker(res) {
-        var icon = new T.Icon({
-
-            iconUrl: "/Assets/Res/Images/ico/jk.png",
-
-            iconSize: new T.Point(30, 30),
-
-            iconAnchor: new T.Point(30, 30)
-        });
-        var icon1 = new T.Icon({
-
-            iconUrl: "/Assets/Res/Images/ico/jk1.png",
-
-            iconSize: new T.Point(30, 30),
-
-            iconAnchor: new T.Point(30, 30)
-        });
-        for (var i = 0; i < res.length; i++) {
-            var iconuse = icon;
-            if (res[i].Status != 1) {
-                iconuse = icon1;
-            }
-            var marker = new T.Marker(new T.LngLat(res[i].L, res[i].B), { icon: iconuse });
-            map.addOverLay(marker);
-        }
-    }
-
-    //加载图表
-    function loadCharts() {
-        var myChart = echarts.init(document.getElementById('charts1'));
-
-        var myChart2 = echarts.init(document.getElementById('charts2'));
-
-        var option = {
-            title: {
-                text: '未来一周气温变化',
-                subtext: '纯属虚构'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['最高气温', '最低气温']
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    dataView: { readOnly: false },
-                    magicType: { type: ['line', 'bar'] }
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: '{value} °C'
-                }
-            },
-            series: [
-                {
-                    name: '最高气温',
-                    type: 'line',
-                    data: [11, 11, 15, 13, 12, 13, 10],
-                    markPoint: {
-                        data: [
-                            { type: 'max', name: '最大值' },
-                            { type: 'min', name: '最小值' }
-                        ]
-                    },
-                    markLine: {
-                        data: [
-                            { type: 'average', name: '平均值' }
-                        ]
-                    }
-                },
-                {
-                    name: '最低气温',
-                    type: 'line',
-                    data: [1, -2, 2, 5, 3, 2, 0],
-                    markPoint: {
-                        data: [
-                            { name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }
-                        ]
-                    },
-                    markLine: {
-                        data: [
-                            { type: 'average', name: '平均值' },
-                            [{
-                                symbol: 'none',
-                                x: '90%',
-                                yAxis: 'max'
-                            }, {
-                                symbol: 'circle',
-                                label: {
-                                    normal: {
-                                        position: 'start',
-                                        formatter: '最大值'
-                                    }
-                                },
-                                type: 'max',
-                                name: '最高点'
-                            }]
-                        ]
-                    }
-                }
-            ]
-        };
-
-        myChart.setOption(option);
-        myChart2.setOption(option);
-    }
+    
+    
 
     var CustomerHome = new _CustomerHome();
     exports('CustomerHome', CustomerHome);

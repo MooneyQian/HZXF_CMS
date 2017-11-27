@@ -33,8 +33,8 @@ namespace Business.Controller.Facades
                 {
                     new Orderby<NavigationEntity>(c => c.N_ORDER_NO, SortOrder.Ascending)
                 };
-                var Column = factory.GetSingle<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuCode == ColumnId));
-                var spec = Specification<NavigationEntity>.Create(c => c.N_COLUMN_ID == ColumnId);
+                //var Column = factory.GetSingle<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuCode == ColumnId));
+                var spec = Specification<NavigationEntity>.Create(c => true);
                 var list = factory.GetAll<NavigationEntity>(spec, orders)
                     .Adapter<NavigationEntity, Navigation_S>(new List<Navigation_S>());
                 return list;

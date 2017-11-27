@@ -179,6 +179,7 @@ layui.define(["jquery", "form", "layer", "qian"], function (exports) {
                 if (dg.parentKey) {
                     _config.parentKey = dg.parentKey;
                     _config.key = dg.key;
+                    _config.parentKeyV = dg.parentKeyV;
                     dg.data = proccessDataGrid(res.Rows);
                 } else {
                     _config.key = dg.key;
@@ -212,7 +213,7 @@ layui.define(["jquery", "form", "layer", "qian"], function (exports) {
             }
         }
         var parentobj = {};
-        getDom(groups["0"], groups, parentobj);
+        getDom(groups[_config.parentKeyV || "0"], groups, parentobj);
 
         return parentobj.children || [];
     }

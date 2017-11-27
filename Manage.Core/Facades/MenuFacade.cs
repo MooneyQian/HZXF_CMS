@@ -44,7 +44,7 @@ namespace Manage.Core.Facades
                     new Orderby<MenuEntity>(c => c.MenuOrder, SortOrder.Ascending)
                 };
                 //return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuType != (int)MenuType.Admin), orders)
-                return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.PerMenuID == id), orders)
+                return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1"), orders)
      .Adapter<MenuEntity, Menu_S>(new List<Menu_S>());
             }
         }
@@ -96,7 +96,7 @@ namespace Manage.Core.Facades
             using (MenuAccess access = new MenuAccess())
             {
                 var RoleMenuIDs = access.GetRoleMenus(RoleID).Select(s => s.ID);
-                var spec = Specification<MenuEntity>.Create(c => c.MenuType != (int)MenuType.Admin && c.RecordStatus != (int)RecordStatus.UnEnable);
+                var spec = Specification<MenuEntity>.Create(c => c.Extend4 == "1" && c.RecordStatus != (int)RecordStatus.UnEnable);
                 if (!string.IsNullOrWhiteSpace(MenuName))
                     spec &= Specification<MenuEntity>.Create(c => c.MenuName.Contains(MenuName));
                 var AllMenus = access.GetAll<MenuEntity>(spec);

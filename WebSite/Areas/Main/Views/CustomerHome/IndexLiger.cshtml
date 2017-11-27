@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Modules = "CustomerHome";
-    ViewBag.IndexName = "执法首页";
+    ViewBag.IndexName = "管理首页";
 
     Layout = "~/Views/Shared/_MainIndex.cshtml";
 }
@@ -10,31 +10,24 @@
 @section TopTipsContent {
     <div class="date-top tips-top case-remind">
         <i class="icon-bell" id="case-tips"></i>
-        <label>案件提醒</label>
+        <label>消息提醒</label>
         <span class="layui-badge layui-hide" id="case-badge">0</span>
     </div>
 }
 
 @section MoreOperationsContent {
-    <dd id="h-change-pwd">
+    @*<dd id="h-change-pwd">
         <a href="javascript:;">
             <i class="icon-edit qui-top-i"></i>
             <label>修改密码</label>
         </a>
-    </dd>
-    <dd id="h-logout">
-        <a href="javascript:;">
-            <i class="icon-signout qui-top-i"></i>
-            <label>退出登录</label>
-        </a>
-    </dd>
+    </dd>*@
 }
 
 
 @section HeadContent
 {
     <script src="@Url.Content("~/Assets/Res/Components/echarts/echarts.min.js")" type="text/javascript"></script>
-    <script src="http://api.tianditu.com/api?v=4.0" type="text/javascript"></script>
 }
 
 

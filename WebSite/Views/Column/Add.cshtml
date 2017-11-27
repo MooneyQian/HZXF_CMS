@@ -1,145 +1,240 @@
-﻿@model Business.Model.Models.Column_S
+﻿@model Manage.Core.Models.Menu_S
 @{
-    ViewBag.Title = "添加栏目";
-    Layout = "~/Views/Shared/_Form.cshtml";
+    ViewBag.Title = "编辑栏目";
+    Layout = "~/Views/Shared/_Add.cshtml";
+
+    ViewBag.Modules = "Column";
+    ViewBag.ModulesType = "Manager";
+    ViewBag.Ext = "Add";
 }
-@section HeadContent{
-    <script type="text/javascript">
-        var CTRL = { art_parent: null, valform: null, dialog: null }
-        $(function () {
-            //验证提示动态代码
-            $("*[datatype]").each(function (index) {
-                $(this).before("<span class='prompt' style='position:relative'><div class='info' onMouseOut='javascript:$(this).hide();'><span class='Validform_checktip'></span><span class='dec'><s class='dec1'>&#9670;</s><s class='dec2'>&#9670;</s></span></div></span>");
-            });
 
-            //验证与提交（可以通过CTRL.valform.check()进行验证）
-            CTRL.valform = $(".valform").Validform({
-                tiptype: tiptype8,
-                tipSweep: false,
-                ajaxPost: true,
-                btnSubmit: "#asave",
-                callback: function () {
-                    CTRL.dialog = $.dialog.tips("数据处理中，请稍候...");
-                    $.post('@Url.Action("_Add")' + '?randnum=' + Math.random(), $('form').serializeArray()).done(function (data) {
-                        if (CTRL.dialog) CTRL.dialog.close();
-                        $.dialog.alert(data.Message, function () {
-                            if (!data.IsError) {
-                                if (parent.FUNC.afterAdd)
-                                    parent.FUNC.afterAdd(data.Data);
-                            }
-                        });
-                    });
-                },
-                //特殊处理帐号名称的
-                datatype:
-                    {
-                        "MenuCode": function (gets, obj, curform, regxp) {/*参数gets是获取到的表单元素值，obj为当前表单元素，curform为当前验证的表单，regxp为内置的一些正则表达式的引用。*/
-                            var msg = "";
-                            if ($("input[name=MenuType]:checked").val() == _MENUTYPE.Function) {
-                                if (gets == "") return "功能菜单必须填写菜单编号！";
-                                var url = '@Url.Action("_MenuFuncCodeIsSuc")';
-                                $.ajax({
-                                    type: "POST",
-                                    url: url,
-                                    async: false,
-                                    data: { MenuCode: gets, PerMenuID: $("#PerMenuID").val(), n: Math.random() },
-                                    success: function (res) {
-                                        if (res == true)
-                                            msg = "同级菜单中已经存在该菜单编号！";
-                                    }
-                                });
-                            } else if ($("input[name=MenuType]:checked").val() == _MENUTYPE.Data) {
-                                if (gets == "") return "数据权限必须填写权限编号！";
-                                var url = '@Url.Action("_MenuDataCodeIsSuc")';
-                                $.ajax({
-                                    type: "POST",
-                                    url: url,
-                                    async: false,
-                                    data: { MenuCode: gets, n: Math.random() },
-                                    success: function (res) {
-                                        if (res == true)
-                                            msg = "该数据权限编号已存在！";
-                                    }
-                                });
-                            }
-                            if (msg != "")
-                                return msg;
-                            else
-                                return true;
-                        },
-                        "Routing": function (gets, obj, curform, regxp) {
-                            if (($("#Controller").val() != "" && $("#Action").val() == "") ||
-                                ($("#Controller").val() == "" && $("#Action").val() != "")) {
-                                return "权限控制Controller和Action必须同时填写！";
-                            } else
-                                return true;
-                        }
-                    }
-            });
+<div class="rightpart">
 
-            //初始化日期控件
-            $(".Wdate").each(function () { $(this).focus(function () { WdatePicker(); }) });
+    @if (ViewBag.OperType == "Edit")
+    {
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>编辑栏目</legend>
+        </fieldset>
+    }
+    else
+    {
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>添加栏目</legend>
+        </fieldset>
+    }
 
-            //初始化下拉框样式
-            //$('#UserType').ligerComboBox({ width: "90%" });
 
-            //初始化状态控件
-            HS.UI.OnOffBtn($("#RecordStatus"));
+    <div class="layui-block">
+        <label class="layui-form-label add-k">类型</label>
+        <div class="layui-input-block add-v border-v">
+            
+            @Html.RadioButtonFor(c => c.MenuType,
+            1,
+            new
+            {
+                @title = "栏目",
+                @id = "MenuType1",
+                @name = "MenuType",
+                lay_verify = "q-required"
+            })
 
-            //绑定权限控制隐藏区
-            $("#rotecontrol").toggle(function () { $("#rotecontrol_center").show(); $(this).children("span").removeClass("icon_control").addClass("icon_control_off"); },
-                function () { $("#rotecontrol_center").hide(); $(this).children("span").removeClass("icon_control_off").addClass("icon_control"); });
+            @Html.RadioButtonFor(c => c.MenuType,
+            2,
+            new
+            {
+                @title = "功能",
+                @id = "MenuType2",
+                @name = "MenuType",
+                lay_verify = "q-required"
+            })
 
-            //绑定菜单类型控制
-            $("input[name=MenuType]").click(function () {
-                switch ($("input[name=MenuType]:checked").val()) {
-                    case _MENUTYPE.Menu: $("#part1").show(); $("#MenuCode").removeClass("k-notnull "); break;
-                    case _MENUTYPE.Function:
-                    case _MENUTYPE.Data: $("#part1").hide(); $("#MenuPath").val(""); $("#MenuCode").addClass("k-notnull "); break;
-                };
-            });
-        });
+          
 
-    </script>
-}
-@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "valform" }))
-{
-    @Html.HiddenFor(c => c.SuperColumnId)
-    <div class="pop-page">
-        <div class="formtitle">新增栏目</div>
-        <table class="tableread" cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                <td class="table-title" style="width: 90px;">上级栏目：</td>
-                <td class="table-value" style="width: 150px;">
-                    @Html.DisplayFor(c => c.SuperColumnName)
-                </td>
-                <td class="table-title" style="width: 90px;">栏目编号：</td>
-                <td class="table-value" style="width: 150px;">
-                    @Html.TextBoxFor(c => c.ColumnNo, new { @class = "k-input k-notnull pw90", datatype = "*", nullmsg = "请输入栏目编号！", errormsg = "请输入栏目编号！" })
-                </td>
-                <td class="table-title" style="width: 90px;">栏目名称：</td>
-                <td class="table-value" style="width: 150px;">
-                    @Html.TextBoxFor(c => c.ColumnName, new { @class = "k-input k-notnull pw90", datatype = "*", nullmsg = "请输入栏目名称！", errormsg = "请输入栏目名称！" })
-                </td>
-            </tr>
-            <tr>
-                <td class="table-title" style="width: 90px;">功能类型：<span class="icon_help" title="功能类型由超级管理员在字典表中维护。"></span>
-                </td>
-                <td class="table-value" style="width: 150px;">
-                    @Html.DropDownListFor(c => c.FunctionType, new SelectList(ViewBag.FunType, "Value", "Text", "0"), new { @class = "k-select pw90" })
-                </td>
-                <td class="table-title" style="width: 90px;">排序编号：</td>
-                <td class="table-value" style="width: 150px;">
-                   @Html.TextBoxFor(c => c.OrderNo, new { @class = "k-input pw90"})
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6" style="text-align: center; height: 40px; line-height: 40px;">
-                    <a title="重置" class="btn1" href="javascript:$('form').get(0).reset();">重置<i></i></a>
-                    <a title="保存" class="btn2" href="javascript:;" id="asave">保存<i></i></a></td>
-            </tr>
-        </table>
+        </div>
     </div>
-    <div class="pop-page-bar">
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">用户使用</label>
+        <div class="layui-input-inline add-v border-v">
+            <input type="checkbox" id="Extend4" name="Extend4" lay-skin="switch" lay-text = "是|否" value = "@(Model.Extend4)" />
+        </div>
     </div>
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">上级栏目</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.PerMenuName,
+            new
+            {
+                @class = "layui-input layui-disabled",
+                @readonly = "readonly"
+            })
+        </div>
+    </div>
+
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">栏目名称</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.MenuName,
+            new
+            {
+                @class = "layui-input",
+                lay_verify = "q-required",
+                placeholder = "请输入栏目名称"
+            })
+        </div>
+    </div>
+
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">栏目地址</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.MenuPath,
+            new
+            {
+                @class = "layui-input"
+            })
+        </div>
+    </div>
+
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">栏目编号</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.MenuCode,
+            new
+            {
+                @class = "layui-input",
+                placeholder = "请输入栏目编号"
+            })
+        </div>
+    </div>
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">排序号</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.MenuOrder,
+            new
+            {
+                @class = "layui-input"
+            })
+        </div>
+    </div>
+
+    <div class="layui-inline">
+        <label class="layui-form-label add-k">状态</label>
+        <div class="layui-input-inline add-v border-v">
+            <input type="checkbox" id="RecordStatus" name="RecordStatus" lay-skin="switch" lay-text = "启用|禁用" value = "@(Model.RecordStatus)" />
+        </div>
+    </div>
+
+    <div class="layui-inline ">
+        <label class="layui-form-label add-k">图标</label>
+        <div class="layui-input-inline add-v">
+            @Html.TextBoxFor(c => c.MenuIcon,
+            new
+            {
+                @class = "layui-input",
+                lay_verify = "q-base64"
+            })
+        </div>
+    </div>
+
+    <div class="MenuType2">
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">功能类型</label>
+            <div class="layui-input-inline add-v">
+              @Html.DropDownListFor(c => c.Extend3, new SelectList(ViewBag.FunType, "Value", "Text"),
+              new
+              {
+                  lay_verify = "q-required"
+              }
+
+              )
+            </div>
+        </div>
+
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">导航栏显示</label>
+            <div class="layui-input-inline add-v border-v">
+                <input type="checkbox" id="IsNav" name="IsNav" lay-skin="switch" lay-text = "是|否" value = "@(Model.IsNav)" />
+            </div>
+        </div>
+
+        <div class="layui-inline IsNav">
+            <label class="layui-form-label add-k">关联列表记录</label>
+            <div class="layui-input-inline add-v border-v">
+                <input type="checkbox" id="Extend2" name="Extend2" lay-skin="switch" lay-text = "是|否" value = "@(Model.Extend2)" />
+            </div>
+        </div>
+
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">工具栏显示</label>
+            <div class="layui-input-inline add-v border-v">
+                <input type="checkbox" id="IsTool" name="IsTool" lay-skin="switch" lay-text = "是|否" value = "@(Model.IsTool)" />
+            </div>
+        </div>
+
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">背景色</label>
+            <div class="layui-input-inline add-v">
+                @Html.TextBoxFor(c => c.Extend1,
+                new
+                {
+                    @class = "layui-input"
+                })
+            </div>
+        </div>
+
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">POST提交</label>
+            <div class="layui-input-inline add-v border-v">
+                <input type="checkbox" id="IsPost" name="IsPost" lay-skin="switch" lay-text = "是|否" value = "@(Model.IsPost)" />
+            </div>
+        </div>
+
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">需要确认</label>
+            <div class="layui-input-inline add-v border-v">
+                <input type="checkbox" id="NeedConfirm" name="NeedConfirm" lay-skin="switch" lay-text = "是|否" value = "@(Model.NeedConfirm)" />
+            </div>
+        </div>
+
+        <div class="layui-inline NeedConfirm">
+            <label class="layui-form-label add-k">确认信息</label>
+            <div class="layui-input-inline add-v">
+                @Html.TextBoxFor(c => c.ConfirmInfo,
+                new
+                {
+                    @class = "layui-input"
+                })
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-block layui-form-text fortextarea">
+        <label class="layui-form-label add-k">栏目描述</label>
+        <div class="layui-input-block add-v-textarea">
+            @Html.TextAreaFor(c => c.MenuDesc,
+            new
+            {
+                @class = "layui-textarea"
+            })
+        </div>
+    </div>
+</div>
+
+
+@section HiddenArea {
+    @Html.HiddenFor(c => c.ID)
+    @Html.HiddenFor(c => c.PerMenuID)
+    @Html.HiddenFor(c => c.MenuLevel)
 }
+
+
+
+
+

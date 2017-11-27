@@ -24,7 +24,7 @@ layui.define(["jquery", "qian", "TreeGridList"], function (exports) {
         return {
             url: '_RoleMenuList?' + qian.getQueryString(),
             grid: [
-                { display: "菜单名", name: "MenuName", type: "text", align: "left", width: 300 },
+                { display: "菜单名1", name: "MenuName", type: "text", align: "left", width: 300 },
                 { display: "类型", name: "MenuType", type: "text", align: "left", width: 100 },
                 { display: "编号", name: "MenuCode", type: "text", align: "left", width: 100 },
                 { display: "地址", name: "MenuPath", type: "text", align: "left" }
@@ -32,14 +32,13 @@ layui.define(["jquery", "qian", "TreeGridList"], function (exports) {
             parentKey: "PerMenuID",
             key: "ID",
             check: true,
-            checkKey: "IsHas"
+            checkKey: "IsHas",
+            parentKeyV: '34b3b356-8880-4049-b8b6-199003ca9bce'
         };
     }
 
     TreeGridList.toSubmit = function () {
         var menuids = TreeGridList.getCheckKeys();
-        console.log(menuids);
-
 
         //$.ajax({
         //    url: '_SetRoleMenu',

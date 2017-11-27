@@ -78,6 +78,9 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
     //左侧菜单url
     _MainIndex.prototype.loadLeftMenus = "";
 
+    //左侧树菜单父id
+    _MainIndex.prototype.parentKeyV = "0";
+
 
     //加载首页
     _MainIndex.prototype.loadTabMain = function () {
@@ -306,7 +309,17 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
             loadSkin();
         });
 
+        //退出登录
+        $("#h-logout").click(function () {
+            logout();
+        });
+
         _this.loadHeader();
+    }
+
+    //退出登录
+    function logout() {
+        window.location.href = '/Account/LogOff';
     }
 
     //加载左侧菜单主方法
@@ -348,7 +361,7 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
                 var item = arr[i];
                 var id;
                 if (!parent) {
-                    id = "0";
+                    id = _this.parentKeyV;
                 } else {
                     id = parent.id;
                 }
@@ -356,7 +369,7 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
                     if (!item.childList) {
                         item.childList = [];
                     }
-                    if (id == "0") {
+                    if (id == _this.parentKeyV) {
                         temp.push(item);
                     } else {
                         parent.childList.push(item);
@@ -378,15 +391,13 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
             var tmp = data[i];
         }
 
-
-
         var parentList = [];
         var childMap = {};
 
         var data = res.Data;
         for (var i = 0; i < data.length; i++) {
             var tmp = data[i];
-            if (tmp.pId == "0") {//父菜单
+            if (tmp.pId == _this.parentKeyV) {//父菜单
                 parentList.push(tmp);
             } else {
                 if (!childMap[tmp.pId]) {

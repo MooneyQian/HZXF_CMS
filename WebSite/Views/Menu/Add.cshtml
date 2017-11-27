@@ -70,6 +70,13 @@
     </div>
 
     <div class="layui-inline">
+        <label class="layui-form-label add-k">用户使用</label>
+        <div class="layui-input-inline add-v border-v">
+            <input type="checkbox" id="Extend4" name="Extend4" lay-skin="switch" lay-text = "是|否" value = "@(Model.Extend4)" />
+        </div>
+    </div>
+
+    <div class="layui-inline">
         <label class="layui-form-label add-k">上级菜单</label>
         <div class="layui-input-inline add-v">
             @Html.TextBoxFor(c => c.PerMenuName,

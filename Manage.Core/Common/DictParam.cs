@@ -27,6 +27,13 @@ namespace Business.Controller.Common
         {
             get { return "PrivilegeType"; }
         }
+
+       
+        /// <summary>
+        /// 功能类型
+        /// </summary>
+        public static string FunType { get { return "FunType"; } }
+
         
     }
 }
