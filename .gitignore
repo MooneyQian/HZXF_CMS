@@ -1,0 +1,8 @@
+
+*.log
+*.cache
+Business.Controller/obj/Debug/Business.Controller.csprojResolveAssemblyReference.cache
+Business.Controller/obj/Debug/Business.Controller.csprojResolveAssemblyReference.cache
+*.cache
+*.dll
+*.pdb
