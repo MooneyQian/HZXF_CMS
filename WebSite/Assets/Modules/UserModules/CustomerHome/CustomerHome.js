@@ -31,7 +31,7 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
     }
 
     //加载左侧菜单
-    MainIndex.loadLeftMenus = "/Home/GetMenuTree";
+    MainIndex.loadLeftMenus = "/Main/Column/GetLeftMenuTree";
 
     //左侧菜单父id
     MainIndex.parentKeyV = "34b3b356-8880-4049-b8b6-199003ca9bce";

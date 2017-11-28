@@ -37,7 +37,7 @@ namespace Business.Controller.Facades
                 if (!string.IsNullOrWhiteSpace(model.VC_ARTICLE_NAME))
                 {
                     var ArticleIDs = factory.GetAll<ArticleEntity>(Specification<ArticleEntity>.Create(c => c.VC_TITLE.Contains(model.VC_ARTICLE_NAME))).Select(c => c.ID).ToList().ToArray();
-                    spec &= Specification<ArticleApplyEntity>.Create(c => ArticleIDs.Contains(c.N_ARTICLE_ID));
+                    spec &= Specification<ArticleApplyEntity>.Create(c => ArticleIDs.Contains(c.ID));
                 }
                 if (!string.IsNullOrWhiteSpace(model.C_CHECK_STATUS))
                 {

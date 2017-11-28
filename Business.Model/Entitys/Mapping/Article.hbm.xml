@@ -20,6 +20,8 @@
     <property name="C_VERIFY_STATUS" column="C_VERIFY_STATUS" type="string"  />
     <property name="B_IMG_NEWS" column="B_IMG_NEWS" type="bool"  />
     <property name="N_LIKES" column="N_LIKES" type="int"  />
+    <property name="C_WX_FLAG" column="C_WX_FLAG" type="string"  />
+
 
     <many-to-one
         name="OPADD"

@@ -18,7 +18,7 @@ namespace Manage.Core.Facades
         /// 获取指定菜单所有菜单（除管理员菜单）
         /// </summary>
         /// <returns></returns>
-        List<Menu_S> GetAllMenus(string id);
+        List<Menu_S> GetAllMenus(Boolean flag);
 
         /// <summary>
         /// 判断菜单编号是否存在

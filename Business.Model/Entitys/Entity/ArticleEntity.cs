@@ -141,6 +141,15 @@ namespace Business.Model.Entitys.Entity
             set;
         }
 
+        /// <summary>
+        /// 微信
+        /// </summary>		
+        public virtual string C_WX_FLAG
+        {
+            get;
+            set;
+        }
+
         #region 扩展
         public virtual SYS_UserEntity OPADD { get; set; }
         public virtual SYS_UserEntity OPUPDATE { get; set; }

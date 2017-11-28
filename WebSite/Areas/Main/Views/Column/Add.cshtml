@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Add.cshtml";
 
     ViewBag.Modules = "Column";
-    ViewBag.ModulesType = "Manager";
     ViewBag.Ext = "Add";
 }
 
@@ -42,13 +41,11 @@
             2,
             new
             {
-                @title = "功能",
+                @title = "栏目权限",
                 @id = "MenuType2",
                 @name = "MenuType",
                 lay_verify = "q-required"
             })
-
-          
 
         </div>
     </div>
@@ -141,11 +138,26 @@
         </div>
     </div>
 
+    <div class="MenuType1">
+        <div class="layui-inline ">
+            <label class="layui-form-label add-k">栏目类型</label>
+            <div class="layui-input-inline add-v">
+              @Html.DropDownListFor(c => c.Extend5, new SelectList(ViewBag.FunType, "Value", "Text"),
+              new
+              {
+                  lay_verify = "q-required"
+              }
+
+              )
+            </div>
+        </div>
+    </div>
+
     <div class="MenuType2">
         <div class="layui-inline ">
-            <label class="layui-form-label add-k">功能类型</label>
+            <label class="layui-form-label add-k">权限类型</label>
             <div class="layui-input-inline add-v">
-              @Html.DropDownListFor(c => c.Extend3, new SelectList(ViewBag.FunType, "Value", "Text"),
+              @Html.DropDownListFor(c => c.Extend3, new SelectList(ViewBag.PrivilegeType, "Value", "Text"),
               new
               {
                   lay_verify = "q-required"
@@ -233,6 +245,7 @@
     @Html.HiddenFor(c => c.PerMenuID)
     @Html.HiddenFor(c => c.MenuLevel)
 }
+
 
 
 

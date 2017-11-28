@@ -30,13 +30,21 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
     Add.validForm = function () {
         var menutype = html.getRadioValueByName("MenuType");
         if (menutype == "") {
-            qian.tips("请选择菜单类型");
+            qian.tips("请选择栏目");
             return false;
         }
+        if (menutype == "1") {
+            var Extend5 = $("#Extend5").val();
+            if ($.trim(Extend5) == "") {
+                qian.tips("请选择栏目类型！");
+                return false;
+            }
+        }
+
         if (menutype == "2") {
             var Extend3 = $("#Extend3").val();
             if ($.trim(Extend3) == "") {
-                qian.tips("请选择功能类型！");
+                qian.tips("请选择权限类型！");
                 return false;
             }
         }
@@ -86,13 +94,13 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
     //监听radio
     Add.listenRadio = function (obj, v) {
         if (obj.name == "MenuType") {//菜单类型
-            if (v == "1" || v == "-1") {
+            if (v == "1") {
+                html.show(".MenuType1", true);
                 html.show(".MenuType2", false);
-            } else if (v == "2") {
-                html.show(".MenuType2", true);
             } else {
-                html.show(".MenuType2", false);
-            }
+                html.show(".MenuType1", false);
+                html.show(".MenuType2", true);
+            } 
         }
     }
 

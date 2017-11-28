@@ -54,6 +54,7 @@ namespace Business.Controller.Controllers
             ViewBag.ActionUrl = "_Add";
             ViewBag.OperType = "Add";
             //model.Extend3 = "SView";
+            ViewBag.PrivilegeType = DictionaryshipFactory.Instance.GetDictSelectList(DictParam.SysPrivilegeType, true);
             ViewBag.FunType = DictionaryshipFactory.Instance.GetDictSelectList(DictParam.FunType, true);
 
             return View(model);
@@ -78,6 +79,7 @@ namespace Business.Controller.Controllers
 
             ViewBag.ActionUrl = "_Edit";
             ViewBag.OperType = "Edit";
+            ViewBag.PrivilegeType = DictionaryshipFactory.Instance.GetDictSelectList(DictParam.SysPrivilegeType, true);
             ViewBag.FunType = DictionaryshipFactory.Instance.GetDictSelectList(DictParam.FunType, true);
            
             return View("Add", model);
@@ -178,9 +180,32 @@ namespace Business.Controller.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        public JsonResult GetLeftMenuTree()
+        {
+            var tree = _MenuFacade.Value.GetAllMenus(true).Select(s => new
+            {
+                id = s.ID,
+                pId = s.PerMenuID,
+                name = s.MenuName,
+                title = s.MenuDesc,
+                menucode = s.MenuCode,
+                menupath = s.MenuPath,
+                order = s.MenuOrder,
+                level = s.MenuLevel,
+                menuicon = s.MenuIcon
+            });
+            return Json(AjaxResult.Success(tree));
+        }
+
+
+        /// <summary>
+        /// 获取菜单Json
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
         public JsonResult GetMenuTree()
         {
-            var tree = _MenuFacade.Value.GetAllMenus(PID).Select(s => new
+            var tree = _MenuFacade.Value.GetAllMenus(false).Select(s => new
             {
                 id = s.ID,
                 pId = s.PerMenuID == "0" ? "root" : s.PerMenuID,//增加一个ID为root的顶层虚拟菜单

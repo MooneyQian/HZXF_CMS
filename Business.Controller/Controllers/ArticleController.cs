@@ -79,7 +79,9 @@ namespace Business.Controller.Controllers
         {
             Article_S model = _ArticleFacade.Value.GetByID<Article_S>(ArticleID);
             model.VC_COLUMN_NAME = _ArticleFacade.Value.GetColumnNameByColumnId(model.N_COLUMN_ID);
-            return View(model);
+            ViewBag.ActionUrl = "_Edit";
+            ViewBag.OperType = "Edit";
+            return View("Add", model);
         }
 
         /// <summary>

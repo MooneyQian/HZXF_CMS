@@ -57,11 +57,11 @@ namespace Business.Controller.Controllers
         /// 【视图】编辑导航
         /// </summary>
         /// <returns></returns>
-        public ViewResult Edit(string NavID)
+        public ViewResult Edit(string id)
         {
-            Navigation_S model = _NavigationFacade.Value.GetByID<Navigation_S>(NavID);
-            model.VC_COLUMN_NAME = _NavigationFacade.Value.GetColumnNameByColumnId(model.N_COLUMN_ID);
-            return View(model);
+            Navigation_S model = _NavigationFacade.Value.GetByID<Navigation_S>(id);
+            //model.VC_COLUMN_NAME = _NavigationFacade.Value.GetColumnNameByColumnId(model.N_COLUMN_ID);
+            return View("Add", model);
         }
 
         /// <summary>
@@ -91,7 +91,8 @@ namespace Business.Controller.Controllers
                 name = s.VC_NAVIGATION_NAME,
                 orderno = s.N_ORDER_NO,
                 columnid = s.N_COLUMN_ID,
-                title = s.VC_NAVIGATION_NAME
+                title = s.VC_NAVIGATION_NAME,
+                open = false
             }).ToList();
             tree.Add(new
             {
@@ -100,7 +101,8 @@ namespace Business.Controller.Controllers
                 name = "导航树",
                 orderno = 0,
                 columnid = ColumnId,
-                title = "顶层虚拟导航"
+                title = "顶层虚拟导航",
+                open = true
             });
             return Json(AjaxResult.Success(tree));
         }

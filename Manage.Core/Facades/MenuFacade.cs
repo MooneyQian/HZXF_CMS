@@ -34,7 +34,7 @@ namespace Manage.Core.Facades
             }
         }
 
-        public List<Menu_S> GetAllMenus(string id)
+        public List<Menu_S> GetAllMenus(Boolean flag)
         {
             using (var factory = new BaseAccess())
             {
@@ -44,10 +44,20 @@ namespace Manage.Core.Facades
                     new Orderby<MenuEntity>(c => c.MenuOrder, SortOrder.Ascending)
                 };
                 //return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuType != (int)MenuType.Admin), orders)
-                return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1"), orders)
+                if (flag)
+                {
+                    return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1" && c.MenuType == 1), orders)
      .Adapter<MenuEntity, Menu_S>(new List<Menu_S>());
+                }
+                else
+                {
+                    return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1"), orders)
+     .Adapter<MenuEntity, Menu_S>(new List<Menu_S>());
+                }
+                
             }
         }
+        
 
         /// <summary>
         /// 判断按钮菜单编号是否存在
