@@ -6,11 +6,12 @@
  * | Description: 文章管理编辑模块
  * +----------------------------------------------------------------------
  */
-layui.define(["jquery", "qian", "html", "Add"], function (exports) {
+layui.define(["jquery", "qian", "html", "Add", "res"], function (exports) {
     var $ = layui.jquery;
     var qian = layui.qian;
     var html = layui.html;
     var Add = layui.Add;
+    var res = layui.res;
 
     function _Article_Add() { };
 
@@ -21,41 +22,51 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
 
     /************************** 重写父类方法 start **************************/
 
+    Add.ajaxFileForm = true;
+
+    Add.ajaxFileFormOptions = [{
+        elem: '#article-area',
+        auto: false,
+        bindAction: '#' + Add.obtainSubmit(),
+        size: 1024 * 3, //文件大小 KB
+        done: function (res, index, upload) {
+            if (res.status == "success") {
+                $("#VC_IMG_URL").val(res.url);
+            }
+        }
+    }];
+
+    Add.proccessField = function (fields) {
+        fields["VC_IMG_URL"] = $("#VC_IMG_URL").val();
+        return fields;
+    }
+
+    
+
     //页面初始化方法
     Add.pageReady = function () {
         loadUE();
+        if ($("#VC_IMG_URL").val() != "") {
+            $("#article-img").append('<img src="' + $("#VC_IMG_URL").val() + '" width="92px" style="margin-bottom:10px;">');
+        }
     }
+   
 
     //表单自定义校验
     Add.validForm = function () {
+        if (!$(".B_IMG_NEWS").is(":hidden")) {
+            if ($("#VC_IMG_URL").val() == "") {
+                qian.tips("请上传新闻图片");
+                return false;
+            }
+        }
         return true;
     }
-
-
-    Add.complexCheck = function () {
-        return true;
-    }
-
-
-    //监听开关
-    Add.listenSwitch = function (id, obj, isChecked, v) {
-
-    }
-
-    //监听radio
-    Add.listenRadio = function (obj, v) {
-
-    }
-
-    Add.listenSelect = function (id, obj, v) {
-
-    }
-
 
 
     /************************** 重写父类方法 end **************************/
 
-
+    //加载编辑器
     function loadUE() {
         UE.getEditor('editor', {
             toolbars: [
@@ -99,7 +110,7 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
                     'deletetable', //删除表格
                     'cleardoc', //清空文档
                     'insertparagraphbeforetable', //"表格前插入行"
-                    'insertcode', //代码语言
+                    //'insertcode', //代码语言
                     'fontfamily', //字体
                     'fontsize', //字号
                     'paragraph', //段落格式
@@ -140,13 +151,13 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
                     'edittip ', //编辑提示
                     'customstyle', //自定义标题
                     'autotypeset', //自动排版
-                    'webapp', //百度应用
+                    //'webapp', //百度应用
                     'touppercase', //字母大写
                     'tolowercase', //字母小写
                     'background', //背景
-                    'template', //模板
-                    'scrawl', //涂鸦
-                    'music', //音乐
+                    //'template', //模板
+                    //'scrawl', //涂鸦
+                    //'music', //音乐
                     'inserttable', //插入表格
                     'drafts', // 从草稿箱加载
                     'charts', // 图表

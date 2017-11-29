@@ -191,8 +191,14 @@ layui.define(["jquery", "qian", "upload"], function (exports) {
             } //执行上传请求出现异常的回调（一般为网络异常、URL 404等）。返回两个参数，分别为：index（当前文件的索引）、upload（重新上传的方法）。详见下文	function	-
         }, opts);
 
-        upload.render(params);
+        return upload.render(params);
     }
+
+    //有无选择文件
+    _res.prototype.hasFiles = function () {
+        return $("#photo-upload-list").length != 0;
+    }
+ 
 
     //文件预览
     function previewFile(that, fileobj) {
@@ -214,7 +220,7 @@ layui.define(["jquery", "qian", "upload"], function (exports) {
                 $('#tools' + index).append('<i class="icon-trash" id="toolsicondel' + index + '"></i>');
                 if (that.accept == "images") {//图片预览
                     $('#photo-upload-item' + index).append('<img src="' + result + '" alt="' + file.name + '" id="' + index + '">');
-                    $('#tools' + index).append('<i class="icon-zoom-in" id="toolsiconbig' + index + '"></i>');
+                    $('#tools' + index).append('<i class="icon-fullscreen" style="font-size:14px;" id="toolsiconbig' + index + '"></i>');
 
                     $('#toolsiconbig' + index).click(function () {
                         qian.showImg({

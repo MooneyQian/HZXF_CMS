@@ -6,16 +6,20 @@
  * | Description: 通用新增/修改页
  * +----------------------------------------------------------------------
  */
-layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], function (exports) {
+layui.define(["jquery", "element", "layer", "form", "util", "qian", "html", "res", "map"], function (exports) {
     var util = layui.util;
     var form = layui.form;
     var layer = layui.layer;
     var qian = layui.qian;
     var $ = layui.jquery;
+    var res = layui.res;
+    //当前上传组件实例集合
+    var uploadList = layui.map;
 
     var html = layui.html;
 
     var _this;
+   
 
     function _Add() {
         _this = this;
@@ -40,18 +44,54 @@ layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], fun
                     return false;
                 }
 
-                if (!_this.validForm()) {
-                    return false;
-                }
-                qian.ajax({
-                    url: actionurl,
-                    type: 'post',
-                    data: _this.proccessField(data.field),
-                    beforeSend:_this.complexCheck(),
-                    success: function (res) {
-                        _this.onSuccess(res);
+                if (_this.ajaxFileForm) {
+                    if (!res.hasFiles() && !_this.validForm()) return false;
+
+                    if (!res.hasFiles() && _this.validForm()) {
+                        qian.ajax({
+                            url: actionurl,
+                            type: 'post',
+                            data: _this.proccessField(data.field),
+                            beforeSend: _this.complexCheck,
+                            success: function (res) {
+                                _this.onSuccess(res);
+                            }
+                        });
                     }
-                });
+                    if (res.hasFiles() && _this.validForm()) {
+                        var uploadobj = uploadList.current.value;
+                        if (uploadobj) {
+                            var done = uploadobj.config.done;
+                            uploadobj.config.done = function (res, index, upload) {
+                                done(res, index, upload);
+                                qian.ajax({
+                                    url: actionurl,
+                                    type: 'post',
+                                    data: _this.proccessField(data.field),
+                                    beforeSend: _this.complexCheck,
+                                    success: function (res) {
+                                        _this.onSuccess(res);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    
+                } else {
+                    if (!_this.validForm()) {
+                        return false;
+                    }
+                    qian.ajax({
+                        url: actionurl,
+                        type: 'post',
+                        data: _this.proccessField(data.field),
+                        beforeSend: _this.complexCheck,
+                        success: function (res) {
+                            _this.onSuccess(res);
+                        }
+                    });
+                }
+                
                 return false;
             });
 
@@ -75,6 +115,13 @@ layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], fun
     _Add.prototype.obtainSubmit = function () {
         return "base-submit";
     }
+
+    //根据key得到上传实例
+    _Add.prototype.obtainUploadByKey = function (key) {
+        return uploadList.get(key);
+    }
+
+    
     
 
     /**************************** 子类可复写方法 start ********************************/
@@ -84,10 +131,21 @@ layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], fun
         return fields;
     }
 
+    //操作完毕后窗口是否关闭
+    _Add.prototype.closeAfterOper = true;
+
     //表单提交成功后执行的方法
     _Add.prototype.onSuccess = function (res) {
-        qian.tips("执行成功");
-        parent.layer.close(_this.index);
+        var message = res.Message || "";
+        if (message == "") {
+            message = "执行成功,2秒后关闭";
+        }
+        if (_this.closeAfterOper) {
+            setTimeout("parent.layer.close(" + _this.index + ")", 2 * 1000);
+            qian.tips(message + ",2秒后关闭");
+        } else {
+            qian.tips(message);
+        }
     }
 
     //页面初始化方法后续
@@ -108,6 +166,14 @@ layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], fun
         return true;
     }
 
+    //同时提交文件和表单
+    _Add.prototype.ajaxFileForm = false;
+
+    //上传控件参数
+    _Add.prototype.ajaxFileFormOptions = [];
+
+    
+
     //下拉框监听方法后续
     _Add.prototype.listenSelect = function (id, obj, v) { }
 
@@ -124,9 +190,24 @@ layui.define(["jquery", "element", "layer", "form", "util", "qian", "html"], fun
 
     /**************************** 成员方法 start ********************************/
 
+
+    //构建上传实例
+    function ajaxFileFormInit() {
+        for (var i = 0; i < _this.ajaxFileFormOptions.length; i++) {
+            var options = _this.ajaxFileFormOptions[i];
+            if (options) {
+                var uploadobj = res.upload(options);
+                uploadList.put(options.elem, uploadobj);
+            }
+        }
+    }
+
     //页面初始化方法
     function pageReadyPre() {
         _this.pageReady();
+        if (_this.ajaxFileForm) {
+            ajaxFileFormInit();
+        }
         triggerDom();
     }
 

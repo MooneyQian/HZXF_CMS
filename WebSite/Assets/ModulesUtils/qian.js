@@ -350,6 +350,7 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
         return fmt;
     }
 
+
     var qian = new _qian();
     exports('qian', qian);
 });

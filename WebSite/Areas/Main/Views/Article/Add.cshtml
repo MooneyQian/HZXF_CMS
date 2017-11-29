@@ -72,8 +72,19 @@
     </div>
 </div>
 
+<div class="layui-block B_IMG_NEWS">
+    <div class="layui-upload-drag photo-info-fixed" id="article-area">
+        <div class="photo-info" id="article-img">
+           
+        </div>
+        <i class="icon-cloud-upload" style="font-size:16px;margin-right:5px;"></i>
+        <span class="photo-info-text">拖拽于此或点击上传
+        </span>
+    </div>
+</div>
+
 <div class="layui-block">
-    <textarea id="editor" style="width:93%;height:900px;">@Html.DisplayTextFor(c => c.VC_CONTENT)</textarea>
+    <script id="editor" type="text/plain" style="width:96%;height:900px;">@Html.DisplayTextFor(c => c.VC_CONTENT)</script>
 </div>
 
 
@@ -84,6 +95,7 @@
     @Html.HiddenFor(c => c.DT_ADD_TIME)
     @Html.HiddenFor(c => c.N_ADD_OP_ID)
     @Html.HiddenFor(c => c.C_VERIFY_STATUS)
+    @Html.HiddenFor(c => c.VC_IMG_URL)
 }
 
 @section HeadContent{

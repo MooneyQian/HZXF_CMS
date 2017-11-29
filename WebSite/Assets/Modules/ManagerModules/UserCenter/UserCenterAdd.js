@@ -54,7 +54,7 @@ layui.define(["jquery", "qian", "html", "Add", "res", "usercenter"], function (e
 
         //头像设置
         $("#centeravatar-img").attr("src", mystr.centeravatar);
-        $("#centeravatar").val(mystr.url);
+        $("#centeravatar").val(mystr.centeravatar);
 
         res.upload({
             elem: '#centeravatar-area',
