@@ -29,11 +29,14 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
 
     //框架初始化
     Layout.customerInit = function () {
+       
         //左侧菜单滚动条美化
-        $(".layui-side").niceScroll({
-            horizrailenabled: false,
-            cursorcolor: "#cdcdcd"
-        });
+        //$(".layui-side").niceScroll({
+        //    horizrailenabled: false,
+        //    cursorcolor: "#cdcdcd",
+        //    cursorwidth: '1px'
+        //});
+       
 
         //监听tab点击事件
         element.on('tab(tabmain)', function () {

@@ -104,6 +104,25 @@ namespace Business.Controller.Controllers
                     menu.MenuIcon = Encoding.Default.GetString(outputb);
                 }
                 _MenuFacade.Value.Add(menu);
+
+                if (menu.Extend5.Equals("1") && menu.MenuType == 1)
+                {
+                    string menupath = menu.MenuPath;
+                    if (!string.IsNullOrEmpty(menupath))
+                    {
+                        if (menupath.IndexOf("?") >= 0)
+                        {
+                            menupath += "&columnid=" + menu.ID + "&navcolumnid=" + menu.PerMenuID;
+                        }
+                        else
+                        {
+                            menupath += "?columnid=" + menu.ID + "&navcolumnid=" + menu.PerMenuID;
+                        }
+                        menu.MenuPath = menupath;
+                        _MenuFacade.Value.Edit(menu);
+                    }
+                }
+
                 var model = (new
                 {
                     id = menu.ID,
@@ -215,7 +234,7 @@ namespace Business.Controller.Controllers
                 menupath = s.MenuPath,
                 order = s.MenuOrder,
                 level = s.MenuLevel,
-                open = s.MenuLevel <= 2,
+                open = s.MenuLevel <= 1,
                 menuType = s.MenuType,
                 isparent = false
             }).ToList();

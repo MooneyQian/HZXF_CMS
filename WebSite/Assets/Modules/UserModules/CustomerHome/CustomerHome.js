@@ -61,7 +61,7 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
     //页面初始化
     _CustomerHome.prototype.init = function () {
         MainIndex.init();
-        
+
         $(window).resize(function () {
             $(".content-scroll").css("height", MainIndex.getHeight());
         });

@@ -27,6 +27,8 @@ layui.define(["jquery", "qian", "html", "Add", "res"], function (exports) {
     Add.ajaxFileFormOptions = [{
         elem: '#article-area',
         auto: false,
+        accept: 'file',
+        exts:'',
         bindAction: '#' + Add.obtainSubmit(),
         size: 1024 * 3, //文件大小 KB
         done: function (res, index, upload) {

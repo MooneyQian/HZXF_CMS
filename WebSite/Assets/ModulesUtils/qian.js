@@ -156,7 +156,7 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
         return layer.msg(msg, {
             icon: 16,
             time: false,
-            shade:false
+            shade: false
         });
     }
 

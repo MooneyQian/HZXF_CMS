@@ -183,6 +183,7 @@ layui.define(["jquery", "element", "form", "qian"], function (exports) {
                         { name: 'LoginSystemID', value: loginSystemID },
                         { name: 'IsKeepLogon', value: IsKeepLogon }
                 ],
+                loadingText:'登录中',
                 success: function (result) {
                     if (result.IsError) {
                         loginStatus = 0
@@ -198,8 +199,8 @@ layui.define(["jquery", "element", "form", "qian"], function (exports) {
                 },
                 error: function (err) {
                     //loading.close();
-                    loginStatus = 0
-                    qian.tips("发送系统错误,请与系统管理员联系！");
+                    loginStatus = 0;
+                    qian.tips(err.Message || "发送系统错误,请与系统管理员联系！");
                 }
             });
         }

@@ -394,6 +394,8 @@ layui.define(["jquery", "element", "form", "layer", "laypage", "table", "laydate
             height: 'full-60',
             cols: proccessDataGrid(obj.grid, obj.checked),
             done: function (res, curr, count) {
+                //加入行双击事件
+                bindDbClick();
             },
             page: _this.dataGrid().page == undefined ? true : _this.dataGrid().page,
             limits: [15, 30, 60],
@@ -414,6 +416,15 @@ layui.define(["jquery", "element", "form", "layer", "laypage", "table", "laydate
                 countName: 'Total'
             },
             where: qian.queryToJSON(qian.getQueryString())
+        });
+    }
+
+    //行双击事件
+    function bindDbClick() {
+        $(".layui-table-main").find("tr").each(function () {
+            $(this).dblclick(function () {
+                //alert();
+            });
         });
     }
 
