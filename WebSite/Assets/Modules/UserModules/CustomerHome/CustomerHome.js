@@ -24,10 +24,10 @@ layui.define(["jquery", "element", "form", "qian", "MainIndex", "usercenter"], f
     MainIndex.loadHeader = function () {
         //消息提醒
         //loadTips();
-        //更改密码
-        //$("#h-change-pwd").click(function () {
-
-        //});
+        //网站首页
+        $("#h-website").click(function () {
+            window.open('/Web/WebDefault/Index');
+        });
     }
 
     //加载左侧菜单

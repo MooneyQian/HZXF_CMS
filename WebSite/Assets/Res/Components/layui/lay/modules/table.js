@@ -705,16 +705,28 @@ layui.define(['laytpl', 'laypage', 'layer', 'form'], function(exports){
     Class.prototype.loading = function(){
         var that = this
         ,options = that.config;
-        if(options.loading && options.url){
-            return layer.msg('数据请求中', {
-                icon: 16
-              ,offset: [
-                that.elem.offset().top + that.elem.height()/2 - 35 - _WIN.scrollTop() + 'px'
-                ,that.elem.offset().left + that.elem.width()/2 - 90 - _WIN.scrollLeft() + 'px'
+        if (options.loading && options.url) {
+            //mod by qian
+            var msg = '<i class="icon-spinner icon-spin" style="margin-right:10px;font-size:19px;"></i><span style="font-size:14px;">数据请求中</span>';
+
+            return layer.msg(msg, {
+                offset: [
+                that.elem.offset().top + that.elem.height() / 2 - 35 - _WIN.scrollTop() + 'px'
+                , that.elem.offset().left + that.elem.width() / 2 - 90 - _WIN.scrollLeft() + 'px'
               ]
-              ,anim: -1
-              ,fixed: false
+              , anim: -1
+              , fixed: false
             });
+
+            //return layer.msg('数据请求中', {
+            //    icon: 16
+            //  ,offset: [
+            //    that.elem.offset().top + that.elem.height()/2 - 35 - _WIN.scrollTop() + 'px'
+            //    ,that.elem.offset().left + that.elem.width()/2 - 90 - _WIN.scrollLeft() + 'px'
+            //  ]
+            //  ,anim: -1
+            //  ,fixed: false
+            //});
         }
     };
   

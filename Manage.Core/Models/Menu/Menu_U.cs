@@ -32,7 +32,7 @@ namespace Manage.Core.Models
         /// <summary>
         /// 父菜单ID。0表示顶层
         /// </summary>
-        //public string PerMenuID { set; get; }
+        public string PerMenuID { set; get; }
 
         /// <summary>
         /// 菜单状态

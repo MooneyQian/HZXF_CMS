@@ -105,6 +105,8 @@
     <Compile Include="Controllers\FloatWindowController.cs" />
     <Compile Include="Controllers\LinkController.cs" />
     <Compile Include="Controllers\NavigationController.cs" />
+    <Compile Include="Controllers\WebControllers\WebBaseController.cs" />
+    <Compile Include="Controllers\WebControllers\WebDefaultController.cs" />
     <Compile Include="Facades\ArticleApplyFacade.cs" />
     <Compile Include="Facades\ArticleFacade.cs" />
     <Compile Include="Facades\CustomerHomeFacade.cs" />

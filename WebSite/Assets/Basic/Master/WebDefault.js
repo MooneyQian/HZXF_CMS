@@ -21,11 +21,11 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
     var DISABLED = 'layui-btn-disabled';
 
 
-    function _WebIndex() {
+    function _WebDefault() {
         _this = this;
     }
 
-    _WebIndex.prototype.init = function () {
+    _WebDefault.prototype.init = function () {
         //阻止IE7以下访问
         if (device.ie && device.ie < 8) {
             layer.alert('如果您非得使用 IE 浏览器访问Fly社区，那么请使用 IE8+');
@@ -83,6 +83,6 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
 
     /**************************** 成员方法 end ********************************/
 
-    var WebIndex = new _WebIndex();
-    exports('WebIndex', WebIndex);
+    var WebDefault = new _WebDefault();
+    exports('WebDefault', WebDefault);
 });

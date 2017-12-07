@@ -158,6 +158,23 @@ namespace Business.Controller.Controllers
                     menu.MenuIcon = Encoding.Default.GetString(outputb);
                 }
 
+                if (menu.Extend5.Equals("1") && menu.MenuType == 1)
+                {
+                    string menupath = menu.MenuPath;
+                    if (!string.IsNullOrEmpty(menupath))
+                    {
+                        if (menupath.IndexOf("?") >= 0)
+                        {
+                            menupath += "&columnid=" + menu.ID + "&navcolumnid=" + menu.PerMenuID;
+                        }
+                        else
+                        {
+                            menupath += "?columnid=" + menu.ID + "&navcolumnid=" + menu.PerMenuID;
+                        }
+                        menu.MenuPath = menupath;
+                    }
+                }
+
                 _MenuFacade.Value.Edit(menu);
                 var model = (new
                 {

@@ -80,16 +80,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Entitys\Mapping\Article.hbm.xml" />
-    <Content Include="Entitys\Mapping\ArticleApply.hbm.xml" />
-    <Content Include="Entitys\Mapping\EmailRecord.hbm.xml" />
-    <Content Include="Entitys\Mapping\Event.hbm.xml" />
-    <Content Include="Entitys\Mapping\EventDetail.hbm.xml" />
-    <Content Include="Entitys\Mapping\FloatWindow.hbm.xml" />
-    <Content Include="Entitys\Mapping\HitRecord.hbm.xml" />
-    <Content Include="Entitys\Mapping\Link.hbm.xml" />
-    <Content Include="Entitys\Mapping\Navigation.hbm.xml" />
-    <Content Include="Entitys\Mapping\SYS_User.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\Article.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\ArticleApply.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\EmailRecord.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\Event.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\EventDetail.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\FloatWindow.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\HitRecord.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\Link.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\Navigation.hbm.xml" />
+    <EmbeddedResource Include="Entitys\Mapping\SYS_User.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

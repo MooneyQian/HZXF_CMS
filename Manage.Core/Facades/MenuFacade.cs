@@ -46,7 +46,8 @@ namespace Manage.Core.Facades
                 //return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuType != (int)MenuType.Admin), orders)
                 if (flag)
                 {
-                    return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1" && c.MenuType == 1), orders)
+                    return factory.GetAll<MenuEntity>(Specification<MenuEntity>.Create(c => c.Extend4 == "1" && c.MenuType == 1 && c.RecordStatus
+                        == 1), orders)
      .Adapter<MenuEntity, Menu_S>(new List<Menu_S>());
                 }
                 else

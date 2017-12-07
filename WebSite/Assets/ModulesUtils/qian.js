@@ -153,8 +153,8 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
         if (_this.isEmpty(msg)) {
             return layer.load(2);
         }
+        msg = '<i class="icon-spinner icon-spin" style="margin-right:10px;font-size:19px;"></i><span style="font-size:14px;">' + msg + '</span>';
         return layer.msg(msg, {
-            icon: 16,
             time: false,
             shade: false
         });

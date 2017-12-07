@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\Main\MainAreaRegistration.cs" />
+    <Compile Include="Areas\Web\WebAreaRegistration.cs" />
     <Compile Include="Assets\Res\Components\UEditor\net\App_Code\Config.cs" />
     <Compile Include="Assets\Res\Components\UEditor\net\App_Code\ConfigHandler.cs" />
     <Compile Include="Assets\Res\Components\UEditor\net\App_Code\CrawlerHandler.cs" />
@@ -159,7 +160,9 @@
     <Content Include="Assets\Basic\Master\tpl\mainindex\topSkinTpl.html" />
     <Content Include="Assets\Basic\Master\TreeGridList.js" />
     <Content Include="Assets\Basic\Master\TreeList.js" />
+    <Content Include="Assets\Basic\Master\WebDefault.js" />
     <Content Include="Assets\ModulesUtils\base64.js" />
+    <Content Include="Assets\ModulesUtils\map.js" />
     <Content Include="Assets\ModulesUtils\qian.js" />
     <Content Include="Assets\ModulesUtils\html.js" />
     <Content Include="Assets\ModulesUtils\res.js" />
@@ -170,7 +173,6 @@
     <Content Include="Assets\Modules\ManagerModules\AppSetting\AppSettingAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\CacheManager\CacheManagerList.js" />
     <Content Include="Assets\Modules\ManagerModules\CacheManager\RoleAdd.js" />
-    <Content Include="Assets\Modules\ManagerModules\Column\ColumnList.js" />
     <Content Include="Assets\Modules\ManagerModules\Dictionary\DictionaryAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\Dictionary\DictionaryList.js" />
     <Content Include="Assets\Modules\ManagerModules\Menu\MenuAdd.js" />
@@ -179,18 +181,23 @@
     <Content Include="Assets\Modules\ManagerModules\Organization\OrganizationAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\Organization\OrganizationList.js" />
     <Content Include="Assets\Modules\ManagerModules\Organization\OrganizationUserList.js" />
+    <Content Include="Assets\Modules\ManagerModules\Role\RoleAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\Role\RoleList.js" />
+    <Content Include="Assets\Modules\ManagerModules\Role\RoleUserList.js" />
     <Content Include="Assets\Modules\ManagerModules\UserCenter\UserCenterAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\User\UserAdd.js" />
     <Content Include="Assets\Modules\ManagerModules\User\UserList.js" />
+    <Content Include="Assets\Modules\UserModules\Article\ArticleList.js" />
+    <Content Include="Assets\Modules\UserModules\Article\ArticleAdd.js" />
+    <Content Include="Assets\Modules\UserModules\Column\ColumnAdd.js" />
+    <Content Include="Assets\Modules\UserModules\Column\ColumnList.js" />
     <Content Include="Assets\Modules\UserModules\CustomerHome\css\index.css" />
     <Content Include="Assets\Modules\UserModules\CustomerHome\CustomerHome.js" />
     <Content Include="Assets\Modules\UserModules\CustomerHome\tpl\mainBodyTpl.html" />
     <Content Include="Assets\Modules\UserModules\EquipmentInfo\EquipmentInfoList.js" />
     <Content Include="Assets\Modules\UserModules\EquipmentInfo\EquipmentInfoAdd.js" />
+    <Content Include="Assets\Modules\UserModules\Navigation\NavigationList.js" />
     <Content Include="Assets\Modules\UserModules\User\UserList.js" />
-    <Content Include="Assets\Modules\UserModules\Test\TestAdd.js" />
-    <Content Include="Assets\Modules\UserModules\Test\TestList.js" />
     <Content Include="Assets\Res\Components\clock\date.js" />
     <Content Include="Assets\Res\Components\clock\jquery.clock.js" />
     <Content Include="Assets\Res\Components\echarts\echarts.min.js" />
@@ -1130,6 +1137,7 @@
     <Content Include="Assets\Res\Css\login\images\user.png" />
     <Content Include="Assets\Res\Css\login\login.css" />
     <Content Include="Assets\Res\Css\login\style.css" />
+    <Content Include="Assets\Res\Css\master\web.css" />
     <Content Include="Assets\Res\Css\master\treegridlist.css" />
     <Content Include="Assets\Res\Css\master\list.css" />
     <Content Include="Assets\Res\Css\master\show.css" />
@@ -1219,7 +1227,6 @@
     <Content Include="Areas\Main\Views\ArticleApply\List.cshtml" />
     <Content Include="Areas\Main\Views\ArticleApply\Show.cshtml" />
     <Content Include="Areas\Main\Views\Article\Add.cshtml" />
-    <Content Include="Areas\Main\Views\Article\Edit.cshtml" />
     <Content Include="Areas\Main\Views\Article\List.cshtml" />
     <Content Include="Areas\Main\Views\Article\SearchList.cshtml" />
     <Content Include="Areas\Main\Views\Article\Show.cshtml" />
@@ -1244,9 +1251,11 @@
     <Content Include="Areas\Main\Views\Link\List.cshtml" />
     <Content Include="Areas\Main\Views\Link\Show.cshtml" />
     <Content Include="Areas\Main\Views\Navigation\Add.cshtml" />
-    <Content Include="Areas\Main\Views\Navigation\Edit.cshtml" />
     <Content Include="Areas\Main\Views\Navigation\List.cshtml" />
-    <Content Include="Areas\Main\Views\Navigation\Show.cshtml" />
+    <Content Include="Areas\Main\Views\Column\Add.cshtml" />
+    <Content Include="Areas\Main\Views\Column\List.cshtml" />
+    <Content Include="Areas\Web\Views\WebDefault\Index.cshtml" />
+    <Content Include="Areas\Web\Views\Web.config" />
     <None Include="Properties\PublishProfiles\IAESRelease.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1271,16 +1280,13 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Account\LogOn.cshtml" />
-    <Content Include="Views\Shared\_TreeColspanList.cshtml" />
     <Content Include="Views\Shared\_TreeGridList.cshtml" />
     <Content Include="Views\UserCenter\UserCenter.cshtml" />
-    <Content Include="Views\Column\Add.cshtml" />
-    <Content Include="Views\Column\Edit.cshtml" />
-    <Content Include="Views\Column\List.cshtml" />
-    <Content Include="Views\Column\Show.cshtml" />
+    <Content Include="Views\Shared\_WebDefault.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Assets\Modules\WebModules\" />
     <Folder Include="UploadFiles\" />
   </ItemGroup>
   <ItemGroup>
@@ -1315,7 +1321,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\IndexLiger.cshtml" />
     <Content Include="Views\Menu\Add.cshtml" />
-    <Content Include="Views\Menu\Edit.cshtml" />
     <Content Include="Views\Menu\List.cshtml">
       <SubType>Code</SubType>
     </Content>

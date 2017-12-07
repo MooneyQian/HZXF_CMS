@@ -25,7 +25,7 @@ namespace Business.Controller.Facades
         /// 获取所有菜单（除管理员菜单）
         /// </summary>
         /// <returns></returns>
-        public List<Navigation_S> GetAllNavigations(string ColumnId)
+        public List<Navigation_S> GetAllNavigations(string ColumnId = "")
         {
             using (var factory = new BaseAccess())
             {
@@ -35,6 +35,10 @@ namespace Business.Controller.Facades
                 };
                 //var Column = factory.GetSingle<MenuEntity>(Specification<MenuEntity>.Create(c => c.MenuCode == ColumnId));
                 var spec = Specification<NavigationEntity>.Create(c => true);
+                if (!string.IsNullOrEmpty(ColumnId))
+                {
+                    spec = Specification<NavigationEntity>.Create(c => c.N_COLUMN_ID.Equals(ColumnId));
+                }
                 var list = factory.GetAll<NavigationEntity>(spec, orders)
                     .Adapter<NavigationEntity, Navigation_S>(new List<Navigation_S>());
                 return list;
