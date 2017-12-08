@@ -19,6 +19,7 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
 
     var _this;
     var DISABLED = 'layui-btn-disabled';
+    var tplPath = 'Basic/Master/tpl/web/webdefault/';
 
 
     function _WebDefault() {
@@ -74,9 +75,45 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
             url: '_GetTopNavs',
             type: 'post',
             success: function (res) {
-                console.log(res);
+                var list = sonsTree(res.Data);
+                qian.ajaxTemplate({
+                    path: tplPath + "topNavTpl.html",
+                    dom: "topNav",
+                    data: list,
+                    render: function () {
+                        element.render('nav');
+                    }
+                });
             }
         });
+    }
+
+    function sonsTree(arr, id) {
+        var temp = [];
+        var forFn = function (arr, parent) {
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var id;
+                if (!parent) {
+                    id = '0';
+                } else {
+                    id = parent.ID;
+                }
+                if (item.N_SUPER_NAVIGATION_ID == id) {
+                    if (!item.childList) {
+                        item.childList = [];
+                    }
+                    if (id == '0') {
+                        temp.push(item);
+                    } else {
+                        parent.childList.push(item);
+                    }
+                    forFn(arr, item);
+                }
+            }
+        };
+        forFn(arr, id);
+        return temp;
     }
 
 

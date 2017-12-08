@@ -1,0 +1,30 @@
+﻿<!-- 顶部导航 start -->
+<ul class="layui-nav fly-nav layui-hide-xs">
+    {{# layui.each(d, function(index, item) { }}
+     <li class="layui-nav-item fly-font" id="{{ item.ID }}" pc>
+        {{# if (item.childList && item.childList.length > 0) { }}
+         <a href="javascript:;">
+            <label>{{ item.VC_NAVIGATION_NAME }}</label>
+         </a>
+         <dl class="layui-nav-child">
+             {{# layui.each(item.childList, function(i, c) { }}
+              <dd>
+                  <a href="">
+                      <label>{{ c.VC_NAVIGATION_NAME }}</label>
+
+                  </a>
+              </dd>
+             {{# }); }}
+         </dl>
+         
+
+        {{# } else { }}
+         <a href="javascript:;">
+            <label>{{ item.VC_NAVIGATION_NAME }}</label>
+         </a>
+        {{# } }}
+     </li>
+    {{# }); }}
+</ul>
+
+<!-- 顶部导航 end -->
