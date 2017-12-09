@@ -6,13 +6,15 @@
  * | Description: 基础通用工具帮助类
  * +----------------------------------------------------------------------
  */
-layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
+layui.define(["jquery", "layer", "laytpl", "form", "util"], function (exports) {
     var $ = layui.jquery;
 
     //弹层对象
     var layer = layui.layer;
     //模板对象
     var laytpl = layui.laytpl;
+
+    var util = layui.util;
 
     var _this;
 
@@ -32,17 +34,28 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
             type: "get",
             data:{},
             hasLoading: true,
+            loadingType: '1', //1:全屏 2:元素内
+            loadingDom:'', 
             loadingText: "",
             loadingIndex:-99,
         }, opts);
 
         if (defaultOpts.hasLoading) {
-            defaultOpts.loadingIndex = _this.loading(defaultOpts.loadingText);
-            defaultOpts.completeclose = function (xhr, des) {
-                if (defaultOpts.loadingIndex >= 0) {
-                    layer.close(defaultOpts.loadingIndex)
+            if (defaultOpts.loadingType == '1') {
+                defaultOpts.loadingIndex = _this.loading(defaultOpts.loadingText);
+                defaultOpts.completeclose = function (xhr, des) {
+                    if (defaultOpts.loadingIndex >= 0) {
+                        layer.close(defaultOpts.loadingIndex)
+                    }
+                }
+            } else {
+                var domloading = _this.partLoading(defaultOpts.loadingDom, defaultOpts.loadingText);
+                defaultOpts.completeclose = function (xhr, des) {
+                    $('.' + domloading).remove();
                 }
             }
+            
+            
         }
 
         $.ajax({
@@ -106,7 +119,7 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
         var defaultOpts = {
             dataType: 'html',
             url: '/Assets/' + opts.path,
-            hasLoading: opts.hasLoading,
+            hasLoading: false,
             success: function (res) {
                 laytpl(res).render(opts.data || {}, function (html) {
                     if (opts.dom) {
@@ -158,6 +171,22 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
             time: false,
             shade: false
         });
+    }
+
+    //元素内请求提示
+    _qian.prototype.partLoading = function (dom, msg) {
+        var style = 'style="height:40px;line-height:40px;text-align:center;color:#666;"';
+       
+        var i = '<i class="icon-spinner icon-spin" style="margin-right:8px;font-size:20px;"></i>';
+
+        if (msg) {
+            msg = '<span style="font-size:14px;">' + msg + '</span>';
+        } else {
+            msg = '';
+        }
+
+        $("#" + dom).append('<div class="' + dom + '_loading" ' + style + '>' + i + msg + '</div>');
+        return dom + '_loading';
     }
 
     //弹窗提示
@@ -328,6 +357,12 @@ layui.define(["jquery", "layer", "laytpl", "form"], function (exports) {
         }
         var r = eval(data.replace(/\/Date\((\d+)\)\//gi, "new Date($1)")).format(fmt);
         return r;
+    }
+
+    //当前时间的多久前
+    _qian.prototype.timeAgo = function (data) {
+        var r = eval(data.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));
+        return util.timeAgo(r, true);
     }
 
     //时间格式化方法

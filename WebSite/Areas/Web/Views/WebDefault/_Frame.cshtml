@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "默认网站框架";
+    ViewBag.Master = "WebDefault";
+    Layout = "~/Views/Shared/_WebLayout.cshtml";
+}
+
+@section HeadCssContent {
+    <link rel="stylesheet" href="@Url.Content("~/Assets/Res/Css/web/webdefault/webdefault.css")" media="all"/>
+    @RenderSection("HeadCssContent", required: false)
+}
+
+<!-- 头部 -->
+<div class="fly-header fly-bg-black">
+    <div class="layui-container">
+        <a class="" href="/"></a>
+
+        <!-- 顶部导航 -->
+        <div id="topNav"></div>
+
+        <!-- 用户状态 -->
+        <div id="topUser"></div>
+
+    </div>
+</div>
+
+<!-- 内容 -->
+<div id="mainBody">
+    @RenderBody()
+</div>
+
+
+
+<div class="fly-footer layui-bg-black fly-footer-customer">
+    <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com 出品</a></p>
+    <p>
+        <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
+        <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
+        <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
+    </p>
+</div>
+
+
+@section HeadContent
+{
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));</script>
+    @RenderSection("HeadContent", required: false)
+}
+

@@ -18,6 +18,8 @@ namespace Business.Controller.Controllers.WebControllers
         #region 定义
         //延迟加载业务处理器
         Lazy<INavigationFacade> _NavigationFacade = new Lazy<INavigationFacade>(() => { return new NavigationFacade(); }, true);
+
+        Lazy<IArticleFacade> _ArticleFacade = new Lazy<IArticleFacade>(() => { return new ArticleFacade(); }, true);
         #endregion
 
 
@@ -47,6 +49,24 @@ namespace Business.Controller.Controllers.WebControllers
             try
             {
                 List<Navigation_S> list = _NavigationFacade.Value.GetAllNavigations(topnavkey);
+                return Json(AjaxResult.Success(list));
+            }
+            catch (Exception ex)
+            {
+                return Json(AjaxResult.Error(ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// 获取顶部导航
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult _GetArticles()
+        {
+            string topnavkey = "11695838-751a-442f-9baa-e943e7d0451b";
+            try
+            {
+                List<Article_S> list = _ArticleFacade.Value.GetTopArticleByColumnID("70010004", 5);
                 return Json(AjaxResult.Success(list));
             }
             catch (Exception ex)

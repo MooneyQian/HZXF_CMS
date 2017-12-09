@@ -32,23 +32,32 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
             layer.alert('如果您非得使用 IE 浏览器访问Fly社区，那么请使用 IE8+');
             return;
         }
-       
-        loadTopNav();
 
-        //手机设备的简单适配
-        var treeMobile = $('.site-tree-mobile')
-        , shadeMobile = $('.site-mobile-shade')
+        $(document).ready(function () {
+            //固定Bar
+            util.fixbar();
 
-        treeMobile.on('click', function () {
-            $('body').addClass('site-mobile');
+            //加载头部
+            loadTop();
+
+            //加载内容
+            _this.loadBody();
+
+            //加载底部
+            loadFooter();
+
+            //手机设备的简单适配
+            var treeMobile = $('.site-tree-mobile')
+            , shadeMobile = $('.site-mobile-shade')
+
+            treeMobile.on('click', function () {
+                $('body').addClass('site-mobile');
+            });
+
+            shadeMobile.on('click', function () {
+                $('body').removeClass('site-mobile');
+            });
         });
-
-        shadeMobile.on('click', function () {
-            $('body').removeClass('site-mobile');
-        });
-
-        //固定Bar
-        util.fixbar();
     }
 
 
@@ -60,6 +69,8 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
 
     /**************************** 子类可复写方法 start ********************************/
 
+    //加载网站主题内容
+    _WebDefault.prototype.loadBody = function () {}
 
 
 
@@ -69,11 +80,12 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
 
     /**************************** 成员方法 start ********************************/
 
-    //加载导航
-    function loadTopNav() {
+    //加载头部
+    function loadTop() {
         qian.ajax({
             url: '_GetTopNavs',
             type: 'post',
+            hasLoading:false,
             success: function (res) {
                 var list = sonsTree(res.Data);
                 qian.ajaxTemplate({
@@ -86,6 +98,11 @@ layui.define(["jquery", "element", "layer", "form", "util", "upload", "laytpl", 
                 });
             }
         });
+    }
+
+    //加载底部
+    function loadFooter() {
+
     }
 
     function sonsTree(arr, id) {

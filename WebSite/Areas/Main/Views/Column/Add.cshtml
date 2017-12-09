@@ -83,27 +83,14 @@
         </div>
     </div>
 
-
-    <div class="layui-inline">
-        <label class="layui-form-label add-k">栏目地址</label>
-        <div class="layui-input-inline add-v">
-            @Html.TextBoxFor(c => c.MenuPath,
-            new
-            {
-                @class = "layui-input"
-            })
-        </div>
-    </div>
-
-
     <div class="layui-inline">
         <label class="layui-form-label add-k">栏目编号</label>
         <div class="layui-input-inline add-v">
             @Html.TextBoxFor(c => c.MenuCode,
             new
             {
-                @class = "layui-input",
-                placeholder = "请输入栏目编号"
+                @class = "layui-input layui-disabled",
+                @readonly = "readonly"
             })
         </div>
     </div>
@@ -150,6 +137,17 @@
 
               )
             </div>
+        </div>
+    </div>
+
+    <div class="layui-block">
+        <label class="layui-form-label add-k">栏目地址</label>
+        <div class="layui-input-block add-v">
+            @Html.TextBoxFor(c => c.MenuPath,
+            new
+            {
+                @class = "layui-input"
+            })
         </div>
     </div>
 

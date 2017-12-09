@@ -75,6 +75,7 @@ layui.define(["jquery", "qian", "html", "Add"], function (exports) {
     Add.onSuccess = function (obj) {
         parent.updateNode(Add.operType(), obj.Data);
         $("#MenuIcon").val(html.base64Decode($("#MenuIcon").val()));
+        $("#MenuCode").val(obj.Data.menucode);
         qian.tips("操作成功");
     }
 

@@ -104,25 +104,13 @@
 
 
     <div class="layui-inline">
-        <label class="layui-form-label add-k">菜单地址</label>
-        <div class="layui-input-inline add-v">
-            @Html.TextBoxFor(c => c.MenuPath,
-            new
-            {
-                @class = "layui-input"
-            })
-        </div>
-    </div>
-
-
-    <div class="layui-inline">
         <label class="layui-form-label add-k">菜单编号</label>
         <div class="layui-input-inline add-v">
             @Html.TextBoxFor(c => c.MenuCode,
             new
             {
-                @class = "layui-input",
-                placeholder = "请输入菜单编号"
+                @class = "layui-input layui-disabled",
+                @readonly = "readonly"
             })
         </div>
     </div>
@@ -153,6 +141,17 @@
             {
                 @class = "layui-input",
                 lay_verify = "q-base64"
+            })
+        </div>
+    </div>
+
+    <div class="layui-block">
+        <label class="layui-form-label add-k">菜单地址</label>
+        <div class="layui-input-block add-v">
+            @Html.TextBoxFor(c => c.MenuPath,
+            new
+            {
+                @class = "layui-input"
             })
         </div>
     </div>

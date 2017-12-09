@@ -158,6 +158,7 @@
     <Content Include="Assets\Basic\Master\tpl\mainindex\mainBodyTpl.html" />
     <Content Include="Assets\Basic\Master\tpl\mainindex\tabRightTpl.html" />
     <Content Include="Assets\Basic\Master\tpl\mainindex\topSkinTpl.html" />
+    <Content Include="Assets\Basic\Master\tpl\web\webdefault\topNavTpl.html" />
     <Content Include="Assets\Basic\Master\TreeGridList.js" />
     <Content Include="Assets\Basic\Master\TreeList.js" />
     <Content Include="Assets\Basic\Master\WebDefault.js" />
@@ -198,6 +199,8 @@
     <Content Include="Assets\Modules\UserModules\EquipmentInfo\EquipmentInfoAdd.js" />
     <Content Include="Assets\Modules\UserModules\Navigation\NavigationList.js" />
     <Content Include="Assets\Modules\UserModules\User\UserList.js" />
+    <Content Include="Assets\Modules\WebDefaultModules\Mainbody\Mainbody.js" />
+    <Content Include="Assets\Modules\WebDefaultModules\tpl\articlelistTpl.html" />
     <Content Include="Assets\Res\Components\clock\date.js" />
     <Content Include="Assets\Res\Components\clock\jquery.clock.js" />
     <Content Include="Assets\Res\Components\echarts\echarts.min.js" />
@@ -1137,7 +1140,6 @@
     <Content Include="Assets\Res\Css\login\images\user.png" />
     <Content Include="Assets\Res\Css\login\login.css" />
     <Content Include="Assets\Res\Css\login\style.css" />
-    <Content Include="Assets\Res\Css\master\web.css" />
     <Content Include="Assets\Res\Css\master\treegridlist.css" />
     <Content Include="Assets\Res\Css\master\list.css" />
     <Content Include="Assets\Res\Css\master\show.css" />
@@ -1145,6 +1147,7 @@
     <Content Include="Assets\Res\Css\master\treelist.css" />
     <Content Include="Assets\Res\Css\qui.css" />
     <Content Include="Assets\Res\Css\style.css" />
+    <Content Include="Assets\Res\Css\web\webdefault\webdefault.css" />
     <Content Include="Assets\Res\Font\font-awesome\font-awesome-ie7.css" />
     <Content Include="Assets\Res\Font\font-awesome\font-awesome-ie7.min.css" />
     <Content Include="Assets\Res\Font\font-awesome\font-awesome.css" />
@@ -1256,6 +1259,7 @@
     <Content Include="Areas\Main\Views\Column\List.cshtml" />
     <Content Include="Areas\Web\Views\WebDefault\Index.cshtml" />
     <Content Include="Areas\Web\Views\Web.config" />
+    <Content Include="Areas\Web\Views\WebDefault\_Frame.cshtml" />
     <None Include="Properties\PublishProfiles\IAESRelease.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1282,11 +1286,10 @@
     <Content Include="Views\Account\LogOn.cshtml" />
     <Content Include="Views\Shared\_TreeGridList.cshtml" />
     <Content Include="Views\UserCenter\UserCenter.cshtml" />
-    <Content Include="Views\Shared\_WebDefault.cshtml" />
+    <Content Include="Views\Shared\_WebLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Assets\Modules\WebModules\" />
     <Folder Include="UploadFiles\" />
   </ItemGroup>
   <ItemGroup>

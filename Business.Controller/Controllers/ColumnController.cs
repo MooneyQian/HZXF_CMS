@@ -12,6 +12,8 @@ using Business.Controller.Common;
 using Manage.Core.Facades;
 using Manage.Core.Common;
 using Manage.Core.Models;
+using NPinyin;
+using System.Text.RegularExpressions;
 
 namespace Business.Controller.Controllers
 {
@@ -103,6 +105,9 @@ namespace Business.Controller.Controllers
                     byte[] outputb = Convert.FromBase64String(menu.MenuIcon);
                     menu.MenuIcon = Encoding.Default.GetString(outputb);
                 }
+
+                menu.MenuCode = Regex.Replace(Pinyin.GetPinyin(menu.MenuName), @"\s", "");
+
                 _MenuFacade.Value.Add(menu);
 
                 if (menu.Extend5.Equals("1") && menu.MenuType == 1)
@@ -174,6 +179,7 @@ namespace Business.Controller.Controllers
                         menu.MenuPath = menupath;
                     }
                 }
+                menu.MenuCode = Regex.Replace(Pinyin.GetPinyin(menu.MenuName), @"\s", "");
 
                 _MenuFacade.Value.Edit(menu);
                 var model = (new

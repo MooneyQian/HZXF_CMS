@@ -334,6 +334,8 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
         qian.ajax({
             url: url,
             type: 'post',
+            loadingType: '2',
+            loadingDom: 'leftMenus',
             success: function (res) {
                 //处理菜单数据
                 var result = sonsTree(res.Data);

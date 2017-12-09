@@ -512,6 +512,11 @@ body .fly-user-main{position: relative; min-height: 600px;}
 .fly-none p{margin-top: 50px; padding: 0 15px; font-size: 20px; color: #999; font-weight: 300;}
 .fly-list-one .fly-none{min-height: 70px;}
 
+.fly-card-title {
+    font-size: 16px;
+    font-weight:600;
+}
+
 
 @media screen and (max-width: 768px) {
 	.fly-main{width: 100%;}
