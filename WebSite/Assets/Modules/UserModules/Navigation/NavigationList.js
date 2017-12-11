@@ -20,6 +20,7 @@ layui.define(["jquery", "TreeList"], function (exports) {
 
     //更新节点
     _Navigation_List.prototype.updateNode = function (type, data) {
+        console.log(type)
         if (type == "Add") {
             TreeList.addNode(data);
         } else {
@@ -33,8 +34,8 @@ layui.define(["jquery", "TreeList"], function (exports) {
     TreeList.settings = function () {
         return {
             loadUrl: 'GetNavTree?ColumnId=' + $("#N_COLUMN_ID").val(),
-            addUrl: 'Add?pid',
-            delUrl: '_Delete?ids',
+            addUrl: 'Add?columnid=' + $("#N_COLUMN_ID").val() + '&pid',
+            delUrl: '_Delete?NavID',
             editUrl: 'Edit?id'
         };
     }

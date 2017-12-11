@@ -76,8 +76,9 @@ layui.define(["jquery", "layer", "qian"], function (exports) {
     //更新节点
     _TreeList.prototype.updateNode = function (data) {
         var tree = _this.curTree;
+        var id = data.id;
         if (tree) {
-            var node = tree.getNodeByParam("id", data.id);
+            var node = tree.getNodeByParam("id", id);
             if (node) {
                 tree.updateNode($.extend(node, data));
             }

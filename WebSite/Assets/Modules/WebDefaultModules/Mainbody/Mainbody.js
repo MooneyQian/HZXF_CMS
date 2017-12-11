@@ -34,15 +34,18 @@ layui.define(["jquery", "qian", "WebDefault"], function (exports) {
 
     function load() {
         qian.ajax({
-            url: '_GetArticles',
+            url: '_GetSingleNav',
             type: 'post',
             loadingType: '2',
             loadingDom: 'aaa',
+            data: {
+                key:'danweijianjie'
+            },
             success: function (res) {
                 qian.ajaxTemplate({
                     path: tplPath + "articlelistTpl.html",
                     dom: "aaa",
-                    data: res,
+                    data: res.Data,
                     render: function () {
                        
                     }

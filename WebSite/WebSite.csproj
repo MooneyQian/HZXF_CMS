@@ -197,6 +197,7 @@
     <Content Include="Assets\Modules\UserModules\CustomerHome\tpl\mainBodyTpl.html" />
     <Content Include="Assets\Modules\UserModules\EquipmentInfo\EquipmentInfoList.js" />
     <Content Include="Assets\Modules\UserModules\EquipmentInfo\EquipmentInfoAdd.js" />
+    <Content Include="Assets\Modules\UserModules\Navigation\NavigationAdd.js" />
     <Content Include="Assets\Modules\UserModules\Navigation\NavigationList.js" />
     <Content Include="Assets\Modules\UserModules\User\UserList.js" />
     <Content Include="Assets\Modules\WebDefaultModules\Mainbody\Mainbody.js" />

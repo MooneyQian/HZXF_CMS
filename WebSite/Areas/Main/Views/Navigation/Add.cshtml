@@ -3,8 +3,8 @@
     ViewBag.Title = "导航管理";
     Layout = "~/Views/Shared/_Add.cshtml";
 
-    //ViewBag.Modules = "Navigation";
-    //ViewBag.Ext = "Add";
+    ViewBag.Modules = "Navigation";
+    ViewBag.Ext = "Add";
 }
 
 <div class="rightpart">
@@ -22,7 +22,7 @@
         </fieldset>
     }
 
-    <div class="layui-inline">
+   @* <div class="layui-inline">
         <label class="layui-form-label add-k">栏目编号</label>
         <div class="layui-input-inline add-v">
             @Html.TextBoxFor(c => c.N_COLUMN_ID,
@@ -32,12 +32,12 @@
                 @readonly = "readonly"
             })
         </div>
-    </div>
+    </div>*@
 
     <div class="layui-inline">
-        <label class="layui-form-label add-k">栏目名称</label>
+        <label class="layui-form-label add-k">上级导航</label>
         <div class="layui-input-inline add-v">
-            @Html.TextBoxFor(c => c.VC_COLUMN_NAME,
+            @Html.TextBoxFor(c => c.VC_SUPER_NAVIGATION_NAME,
             new
             {
                 @class = "layui-input layui-disabled",
@@ -47,9 +47,9 @@
     </div>
 
     <div class="layui-inline">
-        <label class="layui-form-label add-k">上级导航</label>
+        <label class="layui-form-label add-k">标识</label>
         <div class="layui-input-inline add-v">
-            @Html.TextBoxFor(c => c.VC_SUPER_NAVIGATION_NAME,
+            @Html.TextBoxFor(c => c.N_NAV_CODE,
             new
             {
                 @class = "layui-input layui-disabled",
@@ -156,6 +156,7 @@ framename：在指定的框架中打开被链接文档。"></span></td>
  
 
 @section HiddenArea {
+    @Html.HiddenFor(c => c.ID)
     @Html.HiddenFor(c => c.N_COLUMN_ID)
     @Html.HiddenFor(c => c.N_SUPER_NAVIGATION_ID)
 }

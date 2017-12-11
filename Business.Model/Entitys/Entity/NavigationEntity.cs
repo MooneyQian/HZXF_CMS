@@ -20,6 +20,16 @@ namespace Business.Model.Entitys.Entity
             get;
             set;
         }
+
+        /// <summary>
+        /// N_NAV_CODE
+        /// </summary>
+        public virtual string N_NAV_CODE
+        {
+            get;
+            set;
+        }
+        
         /// <summary>
         /// VC_TEXT
         /// </summary>

@@ -21,6 +21,16 @@ namespace Business.Model.Models
             get { return _n_column_id; }
             set { _n_column_id = value; }
         }
+
+        /// <summary>
+        /// N_COLUMN_ID
+        /// </summary>		
+        private string n_nav_code;
+        public string N_NAV_CODE
+        {
+            get { return n_nav_code; }
+            set { n_nav_code = value; }
+        }
         /// <summary>
         /// VC_NAVIGATION_NAME
         /// </summary>		

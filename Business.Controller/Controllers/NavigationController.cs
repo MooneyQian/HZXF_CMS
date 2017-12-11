@@ -11,6 +11,9 @@ using Manage.Open;
 using Business.Controller.Common;
 using System.IO;
 using System.Web;
+using NPinyin;
+using System.Text.RegularExpressions;
+
 namespace Business.Controller.Controllers
 {
     public class NavigationController : BaseController
@@ -25,10 +28,10 @@ namespace Business.Controller.Controllers
         /// 【视图】栏目列表
         /// </summary>
         /// <returns></returns>
-        public ViewResult List(string columnid)
+        public ViewResult List(string selfkey)
         {
             Navigation_S model = new Navigation_S();
-            model.N_COLUMN_ID = columnid;
+            model.N_COLUMN_ID = selfkey;
             return View(model);
         }
 
@@ -40,16 +43,19 @@ namespace Business.Controller.Controllers
         {
             ViewBag.FunType = DictionaryshipFactory.Instance.GetDictSelectList(DictParam.FunType);
             Navigation_S model = new Navigation_S();
-            var columnname = _NavigationFacade.Value.GetColumnNameByColumnId(columnid);
+            
             if (pid == "root")
             {
-                model = new Navigation_S() { N_SUPER_NAVIGATION_ID = "0", VC_SUPER_NAVIGATION_NAME = "", N_COLUMN_ID = columnid, VC_COLUMN_NAME = columnname };
+                model = new Navigation_S() { N_SUPER_NAVIGATION_ID = "0", VC_SUPER_NAVIGATION_NAME = "", N_COLUMN_ID = columnid };
             }
             else
             {
+                var column = _NavigationFacade.Value.GetColumnByKey(columnid);
                 var perNav = _NavigationFacade.Value.GetByID<Navigation_S>(pid);
-                model = new Navigation_S() { N_SUPER_NAVIGATION_ID = pid, VC_SUPER_NAVIGATION_NAME = perNav.VC_NAVIGATION_NAME, N_COLUMN_ID = columnid, VC_COLUMN_NAME = columnname };
+                model = new Navigation_S() { N_SUPER_NAVIGATION_ID = pid, VC_SUPER_NAVIGATION_NAME = perNav.VC_NAVIGATION_NAME, N_COLUMN_ID = columnid };
             }
+            ViewBag.ActionUrl = "_Add";
+            ViewBag.OperType = "Add";
             return View(model);
         }
 
@@ -60,7 +66,11 @@ namespace Business.Controller.Controllers
         public ViewResult Edit(string id)
         {
             Navigation_S model = _NavigationFacade.Value.GetByID<Navigation_S>(id);
+            var perNav = _NavigationFacade.Value.GetByID<Navigation_S>(model.N_SUPER_NAVIGATION_ID);
             //model.VC_COLUMN_NAME = _NavigationFacade.Value.GetColumnNameByColumnId(model.N_COLUMN_ID);
+            model.VC_SUPER_NAVIGATION_NAME = perNav.VC_NAVIGATION_NAME;
+            ViewBag.ActionUrl = "_Edit";
+            ViewBag.OperType = "Edit";
             return View("Add", model);
         }
 
@@ -115,6 +125,7 @@ namespace Business.Controller.Controllers
         {
             try
             {
+                nav.N_NAV_CODE = Regex.Replace(Pinyin.GetPinyin(nav.VC_NAVIGATION_NAME), @"\s", "");
                 _NavigationFacade.Value.Add(nav);
                 var model = (new
                 {
@@ -124,6 +135,7 @@ namespace Business.Controller.Controllers
                     orderno = nav.N_ORDER_NO,
                     columnid = nav.N_COLUMN_ID,
                     title = nav.VC_NAVIGATION_NAME,
+                    navcode = nav.N_NAV_CODE
                 });
                 return Json(AjaxResult.Success(model, "导航新增成功!"));
             }
@@ -142,8 +154,20 @@ namespace Business.Controller.Controllers
         {
             try
             {
+                nav.N_NAV_CODE = Regex.Replace(Pinyin.GetPinyin(nav.VC_NAVIGATION_NAME), @"\s", "");
                 _NavigationFacade.Value.Edit<Navigation_S>(nav);
-                return Json(AjaxResult.Success(nav, "导航修改成功!"));
+                var model = (new
+                {
+                    id = nav.ID,
+                    pId = nav.N_SUPER_NAVIGATION_ID == "0" ? "root" : nav.N_SUPER_NAVIGATION_ID,
+                    name = nav.VC_NAVIGATION_NAME,
+                    orderno = nav.N_ORDER_NO,
+                    columnid = nav.N_COLUMN_ID,
+                    title = nav.VC_NAVIGATION_NAME,
+                    navcode = nav.N_NAV_CODE
+                });
+
+                return Json(AjaxResult.Success(model, "导航修改成功!"));
             }
             catch (Exception ex)
             {

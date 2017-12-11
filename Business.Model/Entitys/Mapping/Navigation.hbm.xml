@@ -5,6 +5,7 @@
 
     </id>
     <property name="N_COLUMN_ID" column="N_COLUMN_ID" type="string"  />
+    <property name="N_NAV_CODE" column="N_NAV_CODE" type="string"  />
     <property name="VC_NAVIGATION_NAME" column="VC_NAVIGATION_NAME" type="string"  />
     <property name="VC_IMAGE" column="VC_IMAGE" type="string"  />
     <property name="VC_VEDIO" column="VC_VEDIO" type="string"  />

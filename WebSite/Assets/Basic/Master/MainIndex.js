@@ -122,10 +122,16 @@ layui.define(["jquery", "element", "qian", "res", "Layout", "usercenter"], funct
             var t = new Date().getTime();
             var frame_height = Layout.getHeight() + "px";
 
-
             var id = params.id || new Date().getTime();
             var title = params.name || "未指定标题";
             var url = params.menupath;
+
+            if (url.indexOf('?') >= 0) {
+                url += '&selfkey=' + id;
+            } else {
+                url += '?selfkey=' + id;
+            }
+
             var icon = params.icon;
 
             var isexisted = existed(id);

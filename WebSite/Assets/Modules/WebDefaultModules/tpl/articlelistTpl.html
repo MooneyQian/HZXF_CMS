@@ -1,20 +1,24 @@
 ﻿<!-- 通用文章列表 -->
-{{# if (d.length > 0) { }}
 <div class="fly-panel">
     <div class="fly-panel-title fly-filter">
-        <a class="fly-card-title">{{ d.name }}</a>
-        <span class="fly-filter-right layui-hide-xs">
-        <a href="" class="layui-this">更多</a>
+        <a class="fly-card-title">{{ d.obj.VC_NAVIGATION_NAME }}</a>
+        
+    {{# if (d.data.length > 0) { }}
+    <span class="fly-filter-right layui-hide-xs">
+        <a href="{{ d.obj.VC_LINK }}" class="layui-this">更多</a>
         </span>
     </div>
 	<ul class="fly-list">
-	{{# layui.each(d.Data, function(index, item) { }}
+	{{# layui.each(d.data, function(index, item) { }}
 		<li>
-			<a href="user/home.html" class="fly-avatar">
+            {{# if (item.B_IMG_NEWS) { }}
+            <a href="user/home.html" class="fly-avatar">
 				<img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
 			</a>
+            {{# } }}
+			
 			<h2>
-				<a class="layui-badge">动态</a>
+				<!-- <a class="layui-badge">动态</a> -->
 				<a href="jie/detail.html">{{ item.VC_TITLE }}</a>
 			</h2>
 			<div class="fly-list-info">
@@ -36,10 +40,12 @@
 		</li>
 	{{# }); }}
 	</ul>
+
+    {{# } else { }}
+        </div>
+	    <div style="height:40px;line-height:40px;text-align:center;color:#666">
+		    <i class="icon-exclamation-sign" style="margin-right:8px"></i>
+		    暂无数据
+	    </div>
+    {{# } }}
  </div>
-{{# } else { }}
-	<div style="height:40px;line-height:40px;text-align:center;color:#666">
-		<i class="icon-exclamation-sign" style="margin-right:8px"></i>
-		暂无数据
-	</div>
-{{# } }}

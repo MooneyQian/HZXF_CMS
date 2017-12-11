@@ -57,5 +57,43 @@ namespace Business.Controller.Facades
                 return Column.MenuName;
             }
         }
+
+
+        /// <summary>
+        /// 根据标识获得栏目
+        /// </summary>
+        /// <returns></returns>
+        public MenuEntity GetColumnByKey(string key)
+        {
+            using (var factory = new BaseAccess())
+            {
+                var Column = factory.GetSingle<MenuEntity>(Specification<MenuEntity>.Create(c => c.ID == key));
+                return Column;
+            }
+        }
+
+        /// <summary>
+        /// 根据标识获得导航
+        /// </summary>
+        /// <returns></returns>
+        public Navigation_S GetNavByKey(string key)
+        {
+            using (var factory = new BaseAccess())
+            {
+                NavigationEntity Column = factory.GetSingle<NavigationEntity>(Specification<NavigationEntity>.Create(c => c.N_NAV_CODE == key));
+
+                if (Column != null)
+                {
+
+                    Navigation_S ss = new Navigation_S();
+
+                    Column.Adapter<Navigation_S>(ss);
+
+                    return Column.Adapter<Navigation_S>(new Navigation_S());
+                }
+
+                return new Navigation_S();
+            }
+        }
     }
 }

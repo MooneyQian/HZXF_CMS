@@ -57,6 +57,38 @@ namespace Business.Controller.Controllers.WebControllers
             }
         }
 
+
+        /// <summary>
+        /// 根据key获得导航信息
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult _GetSingleNav(string key = "", int limits = 5)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return Json(AjaxResult.Error("参数错误"));
+            }
+            try
+            {
+                Navigation_S ns = _NavigationFacade.Value.GetNavByKey(key);
+
+                List<Article_S> list = _ArticleFacade.Value.GetTopArticleByColumnID("70010004", 5);
+
+                var result = new
+                {
+                    obj = ns,
+                    data = list
+                };
+
+
+                return Json(AjaxResult.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return Json(AjaxResult.Error(ex.Message));
+            }
+        }
+
         /// <summary>
         /// 获取顶部导航
         /// </summary>
